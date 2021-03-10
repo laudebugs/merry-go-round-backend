@@ -37,8 +37,8 @@ type Mutation {
 
 """A Product Input"""
 input ProductInput {
-  descrition: String!
-  id: Float!
+  description: String!
+  id: Float
   name: String!
   photo: String!
 }

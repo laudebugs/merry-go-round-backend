@@ -8,11 +8,11 @@ export class ProductInput {
   @Field()
   name: String;
 
-  @Field()
-  id: Number;
+  @Field({ nullable: true })
+  id?: Number;
 
   @Field()
-  descrition?: String;
+  description?: String;
 
   @Field()
   photo?: String;
@@ -33,7 +33,7 @@ export default class ProductResolver {
     TODO: "Why use any here?";
     let newProduct: ProductType | any = new Product({
       name: product.name,
-      description: product.descrition,
+      description: product.description,
       awardee: null,
       photo: product.photo,
       bids: [],

@@ -36,13 +36,13 @@ __decorate([
     __metadata("design:type", String)
 ], ProductInput.prototype, "name", void 0);
 __decorate([
-    type_graphql_1.Field(),
+    type_graphql_1.Field({ nullable: true }),
     __metadata("design:type", Number)
 ], ProductInput.prototype, "id", void 0);
 __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
-], ProductInput.prototype, "descrition", void 0);
+], ProductInput.prototype, "description", void 0);
 __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
@@ -63,7 +63,7 @@ let ProductResolver = class ProductResolver {
             TODO: "Why use any here?";
             let newProduct = new db_1.Product({
                 name: product.name,
-                description: product.descrition,
+                description: product.description,
                 awardee: null,
                 photo: product.photo,
                 bids: [],
