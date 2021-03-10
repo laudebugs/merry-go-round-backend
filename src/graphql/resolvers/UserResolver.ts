@@ -1,12 +1,36 @@
-import { Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../../database/db";
 import { UserType } from "../schema";
-import { Role } from "../schema/UserType";
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+import { authenticateUser, generateToken } from "./helpers";
+
+@InputType({ description: "A User Input" })
+export class UserInput {
+  @Field({ nullable: true })
+  _id?: number;
+
+  @Field()
+  username: String;
+
+  @Field()
+  firstname: String;
+
+  @Field()
+  lastname: String;
+
+  @Field()
+  password: String;
+}
+
+@InputType({ description: "Credentials of a user" })
+export class Credentials {
+  @Field()
+  username: string;
+  @Field()
+  password: string;
+}
 
 @Resolver((of) => UserType)
-export default class resolvers {
+export default class UserResolver {
   @Query((returns) => String, { nullable: true })
   //@ts-ignore
   login(username): string {
@@ -21,34 +45,34 @@ export default class resolvers {
       });
   }
 
+  /**
+   *
+   * @param credentials
+   * @return token | null -> valid | invalid
+   */
   @Mutation((returns) => String, { nullable: true })
   //@ts-ignore
-  signin(credentials: Credentials): String {
-    passport.authenticate("local", {
-      successRedirect: "/",
-      failureRedirect: "/signin?error=true",
-    });
+  async signin(@Arg("credentials") credentials: Credentials) {
+    let auth = await authenticateUser(
+      credentials.username,
+      credentials.password
+    );
+    return auth.token;
   }
 
-  @Mutation((returns) => String, { nullable: true })
+  @Mutation()
   //@ts-ignore
-  signup(user: UserType): String {
+  async signup(@Arg("user") user: UserInput): String | null {
     //TODO: "Sign up and send JWT"
-
-    let newUser = new User({
+    let newUser: UserType | any = new User({
       username: user.username,
       firstname: user.firstname,
       lastname: user.lastname,
-      roles: [Role[2]],
-      award: [],
-      bids: [],
+      password: user.password,
     });
-    newUser.save();
-
-    // TODO: Return JWT
-
-    // Return the JWT
-    return "";
+    return newUser.save().then(() => {
+      return generateToken(user.username, user.password).token;
+    });
   }
 
   @Mutation((returns) => String, { nullable: true })
@@ -59,7 +83,6 @@ export default class resolvers {
   }
 }
 
-export interface Credentials {
-  username: string;
-  password: string;
+function Admin() {
+  throw new Error("Function not implemented.");
 }

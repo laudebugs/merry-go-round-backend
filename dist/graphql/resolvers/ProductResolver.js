@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -17,42 +20,90 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProductInput = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
 const type_graphql_1 = require("type-graphql");
 const db_1 = require("../../database/db");
 const schema_1 = require("../schema");
-let ProductResolvers = class ProductResolvers {
-    getBids() {
+let ProductInput = class ProductInput {
+};
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], ProductInput.prototype, "name", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], ProductInput.prototype, "id", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], ProductInput.prototype, "descrition", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], ProductInput.prototype, "photo", void 0);
+ProductInput = __decorate([
+    type_graphql_1.InputType({ description: "A Product Input" })
+], ProductInput);
+exports.ProductInput = ProductInput;
+let ProductResolver = class ProductResolver {
+    getProducts() {
         return __awaiter(this, void 0, void 0, function* () {
-            TODO: "FIXME - I shouldn't be any";
-            let bids = yield db_1.Bid.find();
-            return bids;
+            let products = yield db_1.Product.find();
+            return products;
         });
     }
-    makeBid(bid) {
+    addProduct(product) {
         return __awaiter(this, void 0, void 0, function* () {
-            let newBid = new db_1.Bid({
-                productId: bid.productId,
-                tickets: bid.tickets,
-                user: bid.user,
+            TODO: "Why use any here?";
+            let newProduct = new db_1.Product({
+                name: product.name,
+                description: product.descrition,
+                awardee: null,
+                photo: product.photo,
+                bids: [],
             });
+            yield newProduct.save();
+            return newProduct;
+        });
+    }
+    award(productId, username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let product = yield db_1.Product.findById(mongoose_1.default.Types.ObjectId(productId));
+            product.awardee = username;
+            yield product.save();
+            return product;
         });
     }
 };
 __decorate([
-    type_graphql_1.Query((returns) => [schema_1.BidType]),
+    type_graphql_1.Query((returns) => [schema_1.ProductType]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], ProductResolvers.prototype, "getBids", null);
+], ProductResolver.prototype, "getProducts", null);
 __decorate([
-    type_graphql_1.Mutation((returns) => schema_1.BidType),
+    type_graphql_1.Mutation((returns) => schema_1.ProductType),
+    __param(0, type_graphql_1.Arg("product")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [schema_1.BidType]),
+    __metadata("design:paramtypes", [ProductInput]),
     __metadata("design:returntype", Promise)
-], ProductResolvers.prototype, "makeBid", null);
-ProductResolvers = __decorate([
-    type_graphql_1.Resolver((of) => schema_1.BidType)
-], ProductResolvers);
-exports.default = ProductResolvers;
+], ProductResolver.prototype, "addProduct", null);
+__decorate([
+    type_graphql_1.Mutation((returns) => schema_1.ProductType),
+    __param(0, type_graphql_1.Arg("productId", { nullable: true })),
+    __param(1, type_graphql_1.Arg("username", { nullable: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], ProductResolver.prototype, "award", null);
+ProductResolver = __decorate([
+    type_graphql_1.Resolver((of) => schema_1.ProductType)
+], ProductResolver);
+exports.default = ProductResolver;
 //# sourceMappingURL=ProductResolver.js.map

@@ -16,6 +16,10 @@ let UserType = class UserType {
 };
 __decorate([
     type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], UserType.prototype, "_id", void 0);
+__decorate([
+    type_graphql_1.Field(),
     __metadata("design:type", String)
 ], UserType.prototype, "username", void 0);
 __decorate([
@@ -27,10 +31,6 @@ __decorate([
     __metadata("design:type", String)
 ], UserType.prototype, "lastname", void 0);
 __decorate([
-    type_graphql_1.Field((type) => [Role]),
-    __metadata("design:type", Array)
-], UserType.prototype, "roles", void 0);
-__decorate([
     type_graphql_1.Field((type) => [_1.BidType]),
     __metadata("design:type", Array)
 ], UserType.prototype, "bids", void 0);
@@ -39,9 +39,13 @@ __decorate([
     __metadata("design:type", Number)
 ], UserType.prototype, "tickets", void 0);
 __decorate([
-    type_graphql_1.Field((type) => _1.ProductType),
-    __metadata("design:type", _1.ProductType)
+    type_graphql_1.Field((type) => Number),
+    __metadata("design:type", Number)
 ], UserType.prototype, "award", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], UserType.prototype, "currentToken", void 0);
 UserType = __decorate([
     type_graphql_1.ObjectType()
 ], UserType);

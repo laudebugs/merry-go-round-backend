@@ -3,12 +3,78 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""A Bid Input"""
+input BidInput {
+  _id: Float
+  productId: Float!
+  tickets: Float!
+  user: String!
+}
+
+type BidType {
+  _id: Float!
+  productId: Float!
+  tickets: Float!
+  user: String!
+}
+
+"""Credentials of a user"""
+input Credentials {
+  password: String!
+  username: String!
+}
+
 type Mutation {
-  signin: String
+  addProduct(product: ProductInput!): ProductType!
+  award(productId: String, username: String): ProductType!
+  changeBid(bid: BidInput!): BidType!
+  deleteBid: BidType!
+  makeBid(bid: BidInput!): BidType!
+  signin(credentials: Credentials!): String
   signout: String
-  signup: String
+  signup(user: UserInput!): String!
+}
+
+"""A Product Input"""
+input ProductInput {
+  descrition: String!
+  id: Float!
+  name: String!
+  photo: String!
+}
+
+type ProductType {
+  _id: Float!
+  awardee: UserType!
+  bids: [BidType!]!
+  description: String!
+  id: Float!
+  name: String!
+  photo: String!
 }
 
 type Query {
+  getBids: [BidType!]!
+  getProducts: [ProductType!]!
   login: String
+}
+
+"""A User Input"""
+input UserInput {
+  _id: Float
+  firstname: String!
+  lastname: String!
+  password: String!
+  username: String!
+}
+
+type UserType {
+  _id: Float!
+  award: Float!
+  bids: [BidType!]!
+  currentToken: String!
+  firstname: String!
+  lastname: String!
+  tickets: Float!
+  username: String!
 }

@@ -3,8 +3,13 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 const SALT_ROUNDS = 16;
 
+// Environment variables
+const dotenv = require("dotenv");
+dotenv.config();
+
 //@ts-ignore
 const dbconf: String = process.env.MONGO_DB;
+
 //@ts-ignore
 mongoose.connect(dbconf, {
   useNewUrlParser: true,
@@ -31,12 +36,13 @@ const UserSchema = new Schema({
 
   award: { type: Schema.ObjectId, ref: "Award" },
   roles: [String],
+  currentToken: String,
 });
 const ProductSchema = new Schema({
   name: String,
-  id: String,
   awardee: String,
-
+  description: String,
+  photo: String,
   // @ts-ignore
 
   bids: [{ type: Schema.ObjectId, ref: "Bid" }],

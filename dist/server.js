@@ -16,17 +16,23 @@ const apollo_server_express_1 = require("apollo-server-express");
 const express_1 = __importDefault(require("express"));
 require("reflect-metadata");
 const type_graphql_1 = require("type-graphql");
+const functions_1 = require("./database/functions");
 const resolvers_1 = require("./graphql/resolvers");
 require("./database/db");
 (function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const schema = yield type_graphql_1.buildSchema({
-            resolvers: [resolvers_1.UserResolver],
+            resolvers: [resolvers_1.UserResolver, resolvers_1.ProductResolver, resolvers_1.BidResolver],
             emitSchemaFile: true,
         });
         const app = express_1.default();
         const server = new apollo_server_express_1.ApolloServer({
             schema,
+            context: ({ req }) => __awaiter(this, void 0, void 0, function* () {
+                const token = req.headers.authorization || "";
+                const user = yield functions_1.getAuthenticatedUser(token);
+                return user;
+            }),
         });
         server.applyMiddleware({ app });
         const PORT = 7000;

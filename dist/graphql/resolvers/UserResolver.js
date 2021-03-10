@@ -8,14 +8,65 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Credentials = exports.UserInput = void 0;
 const type_graphql_1 = require("type-graphql");
 const db_1 = require("../../database/db");
 const schema_1 = require("../schema");
-const UserType_1 = require("../schema/UserType");
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-let resolvers = class resolvers {
+const helpers_1 = require("./helpers");
+let UserInput = class UserInput {
+};
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", Number)
+], UserInput.prototype, "_id", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], UserInput.prototype, "username", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], UserInput.prototype, "firstname", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], UserInput.prototype, "lastname", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], UserInput.prototype, "password", void 0);
+UserInput = __decorate([
+    type_graphql_1.InputType({ description: "A User Input" })
+], UserInput);
+exports.UserInput = UserInput;
+let Credentials = class Credentials {
+};
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], Credentials.prototype, "username", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], Credentials.prototype, "password", void 0);
+Credentials = __decorate([
+    type_graphql_1.InputType({ description: "Credentials of a user" })
+], Credentials);
+exports.Credentials = Credentials;
+let UserResolver = class UserResolver {
     //@ts-ignore
     login(username) {
         db_1.User.find({ username: username })
@@ -28,28 +79,30 @@ let resolvers = class resolvers {
             return null;
         });
     }
-    //@ts-ignore
+    /**
+     *
+     * @param credentials
+     * @return token | null -> valid | invalid
+     */
     signin(credentials) {
-        passport.authenticate("local", {
-            successRedirect: "/",
-            failureRedirect: "/signin?error=true",
+        return __awaiter(this, void 0, void 0, function* () {
+            let auth = yield helpers_1.authenticateUser(credentials.username, credentials.password);
+            return auth.token;
         });
     }
-    //@ts-ignore
     signup(user) {
-        //TODO: "Sign up and send JWT"
-        let newUser = new db_1.User({
-            username: user.username,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            roles: [UserType_1.Role[2]],
-            award: [],
-            bids: [],
+        return __awaiter(this, void 0, void 0, function* () {
+            //TODO: "Sign up and send JWT"
+            let newUser = new db_1.User({
+                username: user.username,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                password: user.password,
+            });
+            return newUser.save().then(() => {
+                return helpers_1.generateToken(user.username, user.password).token;
+            });
         });
-        newUser.save();
-        // TODO: Return JWT
-        // Return the JWT
-        return "";
     }
     //TODO: "Sign up and send JWT"
     signout(jwt) {
@@ -62,27 +115,32 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", String)
-], resolvers.prototype, "login", null);
+], UserResolver.prototype, "login", null);
 __decorate([
     type_graphql_1.Mutation((returns) => String, { nullable: true }),
+    __param(0, type_graphql_1.Arg("credentials")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", String)
-], resolvers.prototype, "signin", null);
+    __metadata("design:paramtypes", [Credentials]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "signin", null);
 __decorate([
-    type_graphql_1.Mutation((returns) => String, { nullable: true }),
+    type_graphql_1.Mutation(),
+    __param(0, type_graphql_1.Arg("user")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [schema_1.UserType]),
+    __metadata("design:paramtypes", [UserInput]),
     __metadata("design:returntype", String)
-], resolvers.prototype, "signup", null);
+], UserResolver.prototype, "signup", null);
 __decorate([
     type_graphql_1.Mutation((returns) => String, { nullable: true }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], resolvers.prototype, "signout", null);
-resolvers = __decorate([
+], UserResolver.prototype, "signout", null);
+UserResolver = __decorate([
     type_graphql_1.Resolver((of) => schema_1.UserType)
-], resolvers);
-exports.default = resolvers;
+], UserResolver);
+exports.default = UserResolver;
+function Admin() {
+    throw new Error("Function not implemented.");
+}
 //# sourceMappingURL=UserResolver.js.map

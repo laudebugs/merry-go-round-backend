@@ -1,7 +1,11 @@
 import { Field, ObjectType } from "type-graphql";
-import { BidType, ProductType } from "./";
+import { BidType } from "./";
+
 @ObjectType()
 export default class UserType {
+  @Field()
+  _id?: number;
+
   @Field()
   username: String;
 
@@ -11,8 +15,8 @@ export default class UserType {
   @Field()
   lastname: String;
 
-  @Field((type) => [Role])
-  roles: [Role];
+  // @Field()
+  // roles: [Role];
 
   @Field((type) => [BidType])
   bids: [BidType];
@@ -20,8 +24,11 @@ export default class UserType {
   @Field()
   tickets: Number;
 
-  @Field((type) => ProductType)
-  award: ProductType;
+  @Field((type) => Number)
+  award: Number;
+
+  @Field()
+  currentToken: String;
 }
 export enum Role {
   "ADMIN" = 1,

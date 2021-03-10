@@ -8,9 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -21,33 +18,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BidInput = void 0;
 const type_graphql_1 = require("type-graphql");
 const db_1 = require("../../database/db");
 const schema_1 = require("../schema");
-let BidInput = class BidInput {
-};
-__decorate([
-    type_graphql_1.Field({ nullable: true }),
-    __metadata("design:type", Number)
-], BidInput.prototype, "_id", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", Number)
-], BidInput.prototype, "productId", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", Number)
-], BidInput.prototype, "tickets", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", String)
-], BidInput.prototype, "user", void 0);
-BidInput = __decorate([
-    type_graphql_1.InputType({ description: "A Bid Input" })
-], BidInput);
-exports.BidInput = BidInput;
-let BidResolver = class BidResolver {
+let ProductResolvers = class ProductResolvers {
     getBids() {
         return __awaiter(this, void 0, void 0, function* () {
             TODO: "FIXME - I shouldn't be any";
@@ -90,29 +64,27 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], BidResolver.prototype, "getBids", null);
-__decorate([
-    type_graphql_1.Mutation((returns) => schema_1.BidType),
-    __param(0, type_graphql_1.Arg("bid")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [BidInput]),
-    __metadata("design:returntype", Promise)
-], BidResolver.prototype, "makeBid", null);
-__decorate([
-    type_graphql_1.Mutation((returns) => schema_1.BidType),
-    __param(0, type_graphql_1.Arg("bid")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [BidInput]),
-    __metadata("design:returntype", Promise)
-], BidResolver.prototype, "changeBid", null);
+], ProductResolvers.prototype, "getBids", null);
 __decorate([
     type_graphql_1.Mutation((returns) => schema_1.BidType),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [schema_1.BidType]),
     __metadata("design:returntype", Promise)
-], BidResolver.prototype, "deleteBid", null);
-BidResolver = __decorate([
+], ProductResolvers.prototype, "makeBid", null);
+__decorate([
+    type_graphql_1.Mutation((returns) => schema_1.BidType),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [schema_1.BidType]),
+    __metadata("design:returntype", Promise)
+], ProductResolvers.prototype, "changeBid", null);
+__decorate([
+    type_graphql_1.Mutation((returns) => schema_1.BidType),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [schema_1.BidType]),
+    __metadata("design:returntype", Promise)
+], ProductResolvers.prototype, "deleteBid", null);
+ProductResolvers = __decorate([
     type_graphql_1.Resolver((of) => schema_1.BidType)
-], BidResolver);
-exports.default = BidResolver;
-//# sourceMappingURL=BidResolver.js.map
+], ProductResolvers);
+exports.default = ProductResolvers;
+//# sourceMappingURL=BiddResolver.js.map

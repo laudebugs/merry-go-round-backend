@@ -15,6 +15,10 @@ let ProductType = class ProductType {
 };
 __decorate([
     type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], ProductType.prototype, "_id", void 0);
+__decorate([
+    type_graphql_1.Field(),
     __metadata("design:type", String)
 ], ProductType.prototype, "name", void 0);
 __decorate([
@@ -29,6 +33,14 @@ __decorate([
     type_graphql_1.Field((type) => [_1.BidType]),
     __metadata("design:type", Array)
 ], ProductType.prototype, "bids", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], ProductType.prototype, "description", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], ProductType.prototype, "photo", void 0);
 ProductType = __decorate([
     type_graphql_1.ObjectType()
 ], ProductType);

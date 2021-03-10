@@ -17,6 +17,9 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const Schema = mongoose_1.default.Schema;
 const SALT_ROUNDS = 16;
+// Environment variables
+const dotenv = require("dotenv");
+dotenv.config();
 //@ts-ignore
 const dbconf = process.env.MONGO_DB;
 //@ts-ignore
@@ -43,11 +46,13 @@ const UserSchema = new Schema({
     // @ts-ignore
     award: { type: Schema.ObjectId, ref: "Award" },
     roles: [String],
+    currentToken: String,
 });
 const ProductSchema = new Schema({
     name: String,
-    id: String,
     awardee: String,
+    description: String,
+    photo: String,
     // @ts-ignore
     bids: [{ type: Schema.ObjectId, ref: "Bid" }],
 });
