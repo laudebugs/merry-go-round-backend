@@ -1,5 +1,5 @@
-import { Field, ObjectType } from "type-graphql";
-import { BidType } from "./";
+import { Authorized, Field, ObjectType } from "type-graphql";
+import { BidType, Role } from "./";
 
 @ObjectType()
 export default class UserType {
@@ -15,9 +15,6 @@ export default class UserType {
   @Field()
   lastname: String;
 
-  // @Field()
-  // roles: [Role];
-
   @Field((type) => [BidType])
   bids: [BidType];
 
@@ -27,11 +24,7 @@ export default class UserType {
   @Field((type) => Number)
   award: Number;
 
-  @Field()
-  currentToken: String;
-}
-export enum Role {
-  "ADMIN" = 1,
-  "MODERATOR",
-  "NORMAL",
+  @Authorized(["SUPER"])
+  @Field((type) => Role, { nullable: true })
+  roles?: [Role];
 }

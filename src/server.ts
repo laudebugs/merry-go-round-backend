@@ -2,17 +2,26 @@ import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
-import { getAuthenticatedUser } from "./database/functions";
+import { getAuthenticatedUser } from "./database/authentication";
+import { AuthCheckerFn } from "./graphql/AuthChecker";
 import {
   BidResolver,
   ProductResolver,
   UserResolver,
 } from "./graphql/resolvers";
+/**
+ * Require environment variables
+ */
+require("dotenv").config();
 require("./database/db");
+// Environment variables
+
 (async function main() {
   const schema = await buildSchema({
     resolvers: [UserResolver, ProductResolver, BidResolver],
     emitSchemaFile: true,
+    authChecker: AuthCheckerFn,
+    authMode: "null",
   });
 
   const app = express();

@@ -1,7 +1,15 @@
-import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Field,
+  InputType,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
+import { authenticateUser, generateToken } from "../../database/authentication";
 import { User } from "../../database/db";
-import { UserType } from "../schema";
-import { authenticateUser, generateToken } from "./helpers";
+import { Role, UserType } from "../schema";
 
 @InputType({ description: "A User Input" })
 export class UserInput {
@@ -12,6 +20,9 @@ export class UserInput {
   username: String;
 
   @Field()
+  email: String;
+
+  @Field()
   firstname: String;
 
   @Field()
@@ -19,6 +30,10 @@ export class UserInput {
 
   @Field()
   password: String;
+
+  @Authorized(["SUPER"])
+  @Field((type) => Role, { nullable: true })
+  roles?: [Role];
 }
 
 @InputType({ description: "Credentials of a user" })
@@ -69,16 +84,20 @@ export default class UserResolver {
       firstname: user.firstname,
       lastname: user.lastname,
       password: user.password,
+      roles: user.roles,
+      email: user.email,
     });
+    // returns a JWT that can then be used to verify a user
     return newUser.save().then(() => {
       return generateToken(user.username, user.password).token;
     });
   }
-
+  @Authorized()
   @Mutation((returns) => String, { nullable: true })
   //TODO: "Sign up and send JWT"
   signout(jwt: String) {
     // Deauthorize the JWT
+
     return "";
   }
 }

@@ -82,12 +82,14 @@ let ProductResolver = class ProductResolver {
     }
 };
 __decorate([
+    type_graphql_1.Authorized(),
     type_graphql_1.Query((returns) => [schema_1.ProductType]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "getProducts", null);
 __decorate([
+    type_graphql_1.Authorized(["ADMIN"]),
     type_graphql_1.Mutation((returns) => schema_1.ProductType),
     __param(0, type_graphql_1.Arg("product")),
     __metadata("design:type", Function),

@@ -1,12 +1,10 @@
 import bcrypt from "bcrypt";
+import emailValidator from "email-validator";
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
+
 const SALT_ROUNDS = 16;
-
-// Environment variables
-const dotenv = require("dotenv");
-dotenv.config();
-
+require("dotenv").config("../../");
 //@ts-ignore
 const dbconf: String = process.env.MONGO_DB;
 
@@ -19,7 +17,13 @@ mongoose.connect(dbconf, {
 });
 
 const UserSchema = new Schema({
-  username: String,
+  username: {
+    type: String,
+    required: true,
+    trim: true,
+    index: { unique: true },
+    minlength: 4,
+  },
   fistname: String,
   lastname: String,
   password: {
@@ -27,7 +31,19 @@ const UserSchema = new Schema({
     required: true,
     trim: true,
     index: { unique: true },
-    minlength: 8,
+    minlength: 6,
+  },
+
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+    index: { unique: true },
+    validate: {
+      validator: emailValidator.validate,
+      message: (props) => `${props.value} is not a valid email address`,
+    },
   },
   tickets: Number,
   // @ts-ignore
@@ -36,7 +52,6 @@ const UserSchema = new Schema({
 
   award: { type: Schema.ObjectId, ref: "Award" },
   roles: [String],
-  currentToken: String,
 });
 const ProductSchema = new Schema({
   name: String,
@@ -71,13 +86,11 @@ UserSchema.pre("save", async function preSave(next) {
 });
 
 UserSchema.methods.comparePassword = async function comparePassword(candidate) {
-  // @ts-ignore
-
+  //@ts-ignore
   return bcrypt.compare(candidate, this.password);
 };
 
 const User = mongoose.model("User", UserSchema);
 const Bid = mongoose.model("Bid", BidSchema);
 const Product = mongoose.model("Product", ProductSchema);
-
 export { User, Bid, Product };

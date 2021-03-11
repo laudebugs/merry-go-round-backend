@@ -14,12 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Product = exports.Bid = exports.User = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const email_validator_1 = __importDefault(require("email-validator"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const Schema = mongoose_1.default.Schema;
 const SALT_ROUNDS = 16;
-// Environment variables
-const dotenv = require("dotenv");
-dotenv.config();
+require("dotenv").config("../../");
 //@ts-ignore
 const dbconf = process.env.MONGO_DB;
 //@ts-ignore
@@ -30,7 +29,13 @@ mongoose_1.default.connect(dbconf, {
     useCreateIndex: true,
 });
 const UserSchema = new Schema({
-    username: String,
+    username: {
+        type: String,
+        required: true,
+        trim: true,
+        index: { unique: true },
+        minlength: 4,
+    },
     fistname: String,
     lastname: String,
     password: {
@@ -38,7 +43,18 @@ const UserSchema = new Schema({
         required: true,
         trim: true,
         index: { unique: true },
-        minlength: 8,
+        minlength: 6,
+    },
+    email: {
+        type: String,
+        required: true,
+        trim: true,
+        lowercase: true,
+        index: { unique: true },
+        validate: {
+            validator: email_validator_1.default.validate,
+            message: (props) => `${props.value} is not a valid email address`,
+        },
     },
     tickets: Number,
     // @ts-ignore
@@ -46,7 +62,6 @@ const UserSchema = new Schema({
     // @ts-ignore
     award: { type: Schema.ObjectId, ref: "Award" },
     roles: [String],
-    currentToken: String,
 });
 const ProductSchema = new Schema({
     name: String,
@@ -81,7 +96,7 @@ UserSchema.pre("save", function preSave(next) {
 });
 UserSchema.methods.comparePassword = function comparePassword(candidate) {
     return __awaiter(this, void 0, void 0, function* () {
-        // @ts-ignore
+        //@ts-ignore
         return bcrypt_1.default.compare(candidate, this.password);
     });
 };

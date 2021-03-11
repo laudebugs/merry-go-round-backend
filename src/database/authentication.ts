@@ -1,9 +1,8 @@
 import { AuthenticationError } from "apollo-server-express";
 import jwt from "jsonwebtoken";
-import { User } from "../../database/db";
+import { User } from "./db";
 
-const dotenv = require("dotenv");
-dotenv.config();
+require("dotenv").config("../../");
 
 /**
  * A function to authenticate a user
@@ -21,14 +20,17 @@ export const authenticateUser = async (username, password) => {
     if (!user) {
       return null;
     }
+
     const passwordOK = await user.comparePassword(password);
     if (!passwordOK) {
       return null;
     }
+
     const token = jwt.sign(
       { username: username, password: password },
       process.env.JWT_SECRET
     );
+
     return { token, username };
   } catch (error) {
     throw new AuthenticationError(
@@ -36,6 +38,11 @@ export const authenticateUser = async (username, password) => {
     );
   }
 };
+/**
+ * Generates a JWT Token
+ * @param username
+ * @param password
+ */
 export const generateToken = (username, password) => {
   const token = jwt.sign(
     { username: username, password: password },
@@ -43,13 +50,34 @@ export const generateToken = (username, password) => {
   );
   return { token, username };
 };
+
+/**
+ * Verifies if a token is valid, otherwise throws an error
+ * @param token
+ */
 export const verifyToken = (token) => {
   try {
-    const { username } = jwt.verify(token, process.env.JWT_TOKEN);
-    return { username, token };
+    const decoded = jwt.verify(token, process.env.JWT_TOKEN);
+    console.log(decoded);
+    return decoded;
   } catch (e) {
     throw new AuthenticationError(
       "Authentication token is invalid, please log in"
     );
+  }
+};
+
+/**
+ * Retrieves an authenticated user if a token is valid
+ * @param token
+ */
+export const getAuthenticatedUser = async (token: String) => {
+  try {
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let user = await User.find({ username: decoded.username });
+    return user;
+  } catch (error) {
+    console.log(error.message);
+    return null;
   }
 };

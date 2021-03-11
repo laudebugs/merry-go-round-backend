@@ -23,9 +23,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Credentials = exports.UserInput = void 0;
 const type_graphql_1 = require("type-graphql");
+const authentication_1 = require("../../database/authentication");
 const db_1 = require("../../database/db");
 const schema_1 = require("../schema");
-const helpers_1 = require("./helpers");
 let UserInput = class UserInput {
 };
 __decorate([
@@ -39,6 +39,10 @@ __decorate([
 __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
+], UserInput.prototype, "email", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
 ], UserInput.prototype, "firstname", void 0);
 __decorate([
     type_graphql_1.Field(),
@@ -48,6 +52,11 @@ __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
 ], UserInput.prototype, "password", void 0);
+__decorate([
+    type_graphql_1.Authorized(["SUPER"]),
+    type_graphql_1.Field((type) => schema_1.Role, { nullable: true }),
+    __metadata("design:type", Array)
+], UserInput.prototype, "roles", void 0);
 UserInput = __decorate([
     type_graphql_1.InputType({ description: "A User Input" })
 ], UserInput);
@@ -86,7 +95,7 @@ let UserResolver = class UserResolver {
      */
     signin(credentials) {
         return __awaiter(this, void 0, void 0, function* () {
-            let auth = yield helpers_1.authenticateUser(credentials.username, credentials.password);
+            let auth = yield authentication_1.authenticateUser(credentials.username, credentials.password);
             return auth.token;
         });
     }
@@ -98,9 +107,12 @@ let UserResolver = class UserResolver {
                 firstname: user.firstname,
                 lastname: user.lastname,
                 password: user.password,
+                roles: user.roles,
+                email: user.email,
             });
+            // returns a JWT that can then be used to verify a user
             return newUser.save().then(() => {
-                return helpers_1.generateToken(user.username, user.password).token;
+                return authentication_1.generateToken(user.username, user.password).token;
             });
         });
     }
@@ -131,6 +143,7 @@ __decorate([
     __metadata("design:returntype", String)
 ], UserResolver.prototype, "signup", null);
 __decorate([
+    type_graphql_1.Authorized(),
     type_graphql_1.Mutation((returns) => String, { nullable: true }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

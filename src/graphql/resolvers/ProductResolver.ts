@@ -1,5 +1,13 @@
 import mongoose from "mongoose";
-import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Field,
+  InputType,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import { Product } from "../../database/db";
 import { ProductType } from "../schema";
 
@@ -20,12 +28,14 @@ export class ProductInput {
 
 @Resolver((of) => ProductType)
 export default class ProductResolver {
+  @Authorized()
   @Query((returns) => [ProductType])
   async getProducts(): Promise<ProductType[]> {
     let products: ProductType[] | any = await Product.find();
     return products;
   }
 
+  @Authorized(["ADMIN"])
   @Mutation((returns) => ProductType)
   async addProduct(
     @Arg("product") product: ProductInput

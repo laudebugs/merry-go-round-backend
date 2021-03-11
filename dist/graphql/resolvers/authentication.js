@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyToken = exports.generateToken = exports.authenticateUser = void 0;
+exports.getAuthenticatedUser = exports.verifyToken = exports.generateToken = exports.authenticateUser = void 0;
 const apollo_server_express_1 = require("apollo-server-express");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const db_1 = require("../../database/db");
@@ -60,4 +60,16 @@ const verifyToken = (token) => {
     }
 };
 exports.verifyToken = verifyToken;
-//# sourceMappingURL=helpers.js.map
+const getAuthenticatedUser = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        let user = yield db_1.User.find({ username: decoded.username });
+        return user;
+    }
+    catch (error) {
+        console.log(error.message);
+        return null;
+    }
+});
+exports.getAuthenticatedUser = getAuthenticatedUser;
+//# sourceMappingURL=authentication.js.map

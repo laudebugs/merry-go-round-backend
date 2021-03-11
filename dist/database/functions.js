@@ -8,12 +8,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAuthenticatedUser = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const db_1 = require("./db");
+require("dotenv").config("../../");
+console.log(process.env.JWT_SECRET);
 const getAuthenticatedUser = (token) => __awaiter(void 0, void 0, void 0, function* () {
-    let user = yield db_1.User.find({ currentToken: token });
-    return user;
+    try {
+        let decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        let user = yield db_1.User.find({ username: decoded.username });
+        return user;
+    }
+    catch (error) {
+        console.log(error.message);
+        return null;
+    }
 });
 exports.getAuthenticatedUser = getAuthenticatedUser;
 //# sourceMappingURL=functions.js.map

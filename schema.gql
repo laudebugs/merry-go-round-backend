@@ -59,12 +59,23 @@ type Query {
   login: String
 }
 
+"""Roles of a User based on access"""
+enum Role {
+  """A Moderator has some privilages"""
+  ADMIN
+
+  """An Admin has all privilages"""
+  SUPER
+}
+
 """A User Input"""
 input UserInput {
   _id: Float
+  email: String!
   firstname: String!
   lastname: String!
   password: String!
+  roles: Role
   username: String!
 }
 
@@ -72,9 +83,9 @@ type UserType {
   _id: Float!
   award: Float!
   bids: [BidType!]!
-  currentToken: String!
   firstname: String!
   lastname: String!
+  roles: Role
   tickets: Float!
   username: String!
 }

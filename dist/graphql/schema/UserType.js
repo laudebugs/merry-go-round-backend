@@ -9,7 +9,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Role = void 0;
 const type_graphql_1 = require("type-graphql");
 const _1 = require("./");
 let UserType = class UserType {
@@ -43,17 +42,12 @@ __decorate([
     __metadata("design:type", Number)
 ], UserType.prototype, "award", void 0);
 __decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", String)
-], UserType.prototype, "currentToken", void 0);
+    type_graphql_1.Authorized(["SUPER"]),
+    type_graphql_1.Field((type) => _1.Role, { nullable: true }),
+    __metadata("design:type", Array)
+], UserType.prototype, "roles", void 0);
 UserType = __decorate([
     type_graphql_1.ObjectType()
 ], UserType);
 exports.default = UserType;
-var Role;
-(function (Role) {
-    Role[Role["ADMIN"] = 1] = "ADMIN";
-    Role[Role["MODERATOR"] = 2] = "MODERATOR";
-    Role[Role["NORMAL"] = 3] = "NORMAL";
-})(Role = exports.Role || (exports.Role = {}));
 //# sourceMappingURL=UserType.js.map
