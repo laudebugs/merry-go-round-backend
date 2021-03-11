@@ -24,8 +24,6 @@ const UserSchema = new Schema({
     index: { unique: true },
     minlength: 4,
   },
-  fistname: String,
-  lastname: String,
   password: {
     type: String,
     required: true,
@@ -58,8 +56,8 @@ const ProductSchema = new Schema({
   awardee: String,
   description: String,
   photo: String,
-  // @ts-ignore
   owner: String,
+  // @ts-ignore
   bids: [{ type: Schema.ObjectId, ref: "Bid" }],
 });
 const BidSchema = new Schema({

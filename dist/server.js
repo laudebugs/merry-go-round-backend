@@ -36,11 +36,12 @@ require("./database/db");
         const app = express_1.default();
         const server = new apollo_server_express_1.ApolloServer({
             schema,
-            context: ({ req }) => __awaiter(this, void 0, void 0, function* () {
+            context: ({ req }) => {
+                // console.log(req.headers.authorization);
                 const token = req.headers.authorization || "";
-                const user = yield authentication_1.getAuthenticatedUser(token);
+                const user = authentication_1.verifyToken(token);
                 return user;
-            }),
+            },
         });
         server.applyMiddleware({ app });
         const PORT = 7000;

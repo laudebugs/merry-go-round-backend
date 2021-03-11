@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
-import { getAuthenticatedUser } from "./database/authentication";
+import { verifyToken } from "./database/authentication";
 import { AuthCheckerFn } from "./graphql/AuthChecker";
 import {
   BidResolver,
@@ -28,9 +28,10 @@ require("./database/db");
 
   const server = new ApolloServer({
     schema,
-    context: async ({ req }) => {
+    context: ({ req }) => {
+      // console.log(req.headers.authorization);
       const token = req.headers.authorization || "";
-      const user = await getAuthenticatedUser(token);
+      const user = verifyToken(token);
       return user;
     },
   });

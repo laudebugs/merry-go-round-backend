@@ -9,12 +9,6 @@ export default class UserType {
   @Field()
   username: String;
 
-  @Field()
-  firstname: String;
-
-  @Field()
-  lastname: String;
-
   @Field((type) => [BidType])
   bids: [BidType];
 

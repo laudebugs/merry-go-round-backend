@@ -31,7 +31,7 @@ export class ProductInput {
 
 @Resolver((of) => ProductType)
 export default class ProductResolver {
-  @Authorized()
+  // @Authorized()
   @Query((returns) => [ProductType])
   async getProducts(): Promise<ProductType[]> {
     let products: ProductType[] | any = await Product.find();

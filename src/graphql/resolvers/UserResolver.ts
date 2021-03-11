@@ -9,6 +9,7 @@ import {
 import { authenticateUser, generateToken } from "../../database/authentication";
 import { User } from "../../database/db";
 import { Role, UserType } from "../schema";
+import { Error } from "../schema/Error";
 
 @InputType({ description: "A User Input" })
 export class UserInput {
@@ -54,11 +55,11 @@ export default class UserResolver {
   @Mutation((returns) => String, { nullable: true })
   //@ts-ignore
   async signin(@Arg("credentials") credentials: Credentials) {
-    let auth = await authenticateUser(
+    let token: string | Error = await authenticateUser(
       credentials.username,
       credentials.password
     );
-    return auth.token;
+    return token;
   }
 
   /**
@@ -71,16 +72,14 @@ export default class UserResolver {
     //TODO: "Sign up and send JWT"
     let newUser: UserType | any = new User({
       username: user.username,
-      firstname: user.firstname,
-      lastname: user.lastname,
       password: user.password,
       roles: user.roles,
       email: user.email,
     });
     // returns a JWT that can then be used to verify a user
-    return newUser.save().then(() => {
-      return generateToken(user.username, user.password).token;
-    });
+    await newUser.save();
+    let token: string = await generateToken(user.username, user.roles);
+    return token;
   }
   @Authorized()
   @Mutation((returns) => String, { nullable: true })
@@ -90,8 +89,4 @@ export default class UserResolver {
 
     return "";
   }
-}
-
-function Admin() {
-  throw new Error("Function not implemented.");
 }

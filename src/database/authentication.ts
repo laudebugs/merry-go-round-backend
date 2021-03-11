@@ -1,5 +1,5 @@
-import { AuthenticationError } from "apollo-server-express";
 import jwt from "jsonwebtoken";
+import { Error } from "../graphql/schema/Error";
 import { User } from "./db";
 
 require("dotenv").config("../../");
@@ -11,12 +11,16 @@ require("dotenv").config("../../");
  * @returns null if a user can't be authenticated, the username and token if otherwise
  */
 
-export const authenticateUser = async (username, password) => {
+export const authenticateUser = async (
+  username,
+  password
+): Promise<string | Error> => {
   try {
     // Verify the Use
     const user: typeof User | any = await User.findOne({
       username: username,
     }).exec();
+
     if (!user) {
       return null;
     }
@@ -26,44 +30,42 @@ export const authenticateUser = async (username, password) => {
       return null;
     }
 
-    const token = jwt.sign(
-      { username: username, password: password },
-      process.env.JWT_SECRET
-    );
+    const token = generateToken(username, user.roles);
 
-    return { token, username };
+    return token;
   } catch (error) {
-    throw new AuthenticationError(
-      "Authentication token is invalid, please log in"
-    );
+    return Error["INCORRECT_PASSWORD"];
   }
 };
+
 /**
  * Generates a JWT Token
  * @param username
  * @param password
  */
-export const generateToken = (username, password) => {
+export const generateToken = (username, roles): string => {
   const token = jwt.sign(
-    { username: username, password: password },
+    {
+      username: username,
+      roles: roles,
+      // A token that expires in 1 day
+      iat: 1516234022,
+    },
     process.env.JWT_SECRET
   );
-  return { token, username };
+  return token;
 };
 
 /**
  * Verifies if a token is valid, otherwise throws an error
  * @param token
  */
-export const verifyToken = (token) => {
+export const verifyToken = (token: string) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_TOKEN);
-    console.log(decoded);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     return decoded;
   } catch (e) {
-    throw new AuthenticationError(
-      "Authentication token is invalid, please log in"
-    );
+    return null;
   }
 };
 

@@ -22,14 +22,6 @@ __decorate([
     __metadata("design:type", String)
 ], UserType.prototype, "username", void 0);
 __decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", String)
-], UserType.prototype, "firstname", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", String)
-], UserType.prototype, "lastname", void 0);
-__decorate([
     type_graphql_1.Field((type) => [_1.BidType]),
     __metadata("design:type", Array)
 ], UserType.prototype, "bids", void 0);

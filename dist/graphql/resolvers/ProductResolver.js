@@ -56,6 +56,7 @@ ProductInput = __decorate([
 ], ProductInput);
 exports.ProductInput = ProductInput;
 let ProductResolver = class ProductResolver {
+    // @Authorized()
     getProducts() {
         return __awaiter(this, void 0, void 0, function* () {
             let products = yield db_1.Product.find();
@@ -87,7 +88,6 @@ let ProductResolver = class ProductResolver {
     }
 };
 __decorate([
-    type_graphql_1.Authorized(),
     type_graphql_1.Query((returns) => [schema_1.ProductType]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),

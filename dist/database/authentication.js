@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAuthenticatedUser = exports.verifyToken = exports.generateToken = exports.authenticateUser = void 0;
-const apollo_server_express_1 = require("apollo-server-express");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const Error_1 = require("../graphql/schema/Error");
 const db_1 = require("./db");
 require("dotenv").config("../../");
 /**
@@ -36,11 +36,11 @@ const authenticateUser = (username, password) => __awaiter(void 0, void 0, void 
         if (!passwordOK) {
             return null;
         }
-        const token = jsonwebtoken_1.default.sign({ username: username, password: password }, process.env.JWT_SECRET);
-        return { token, username };
+        const token = exports.generateToken(username, user.roles);
+        return token;
     }
     catch (error) {
-        throw new apollo_server_express_1.AuthenticationError("Authentication token is invalid, please log in");
+        return Error_1.Error["INCORRECT_PASSWORD"];
     }
 });
 exports.authenticateUser = authenticateUser;
@@ -49,9 +49,14 @@ exports.authenticateUser = authenticateUser;
  * @param username
  * @param password
  */
-const generateToken = (username, password) => {
-    const token = jsonwebtoken_1.default.sign({ username: username, password: password }, process.env.JWT_SECRET);
-    return { token, username };
+const generateToken = (username, roles) => {
+    const token = jsonwebtoken_1.default.sign({
+        username: username,
+        roles: roles,
+        // A token that expires in 1 day
+        iat: 1516234022,
+    }, process.env.JWT_SECRET);
+    return token;
 };
 exports.generateToken = generateToken;
 /**
@@ -60,12 +65,11 @@ exports.generateToken = generateToken;
  */
 const verifyToken = (token) => {
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_TOKEN);
-        console.log(decoded);
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         return decoded;
     }
     catch (e) {
-        throw new apollo_server_express_1.AuthenticationError("Authentication token is invalid, please log in");
+        return null;
     }
 };
 exports.verifyToken = verifyToken;

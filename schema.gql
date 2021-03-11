@@ -84,8 +84,6 @@ type UserType {
   _id: Float!
   award: Float!
   bids: [BidType!]!
-  firstname: String!
-  lastname: String!
   roles: Role
   tickets: Float!
   username: String!

@@ -84,8 +84,8 @@ let UserResolver = class UserResolver {
      */
     signin(credentials) {
         return __awaiter(this, void 0, void 0, function* () {
-            let auth = yield authentication_1.authenticateUser(credentials.username, credentials.password);
-            return auth.token;
+            let token = yield authentication_1.authenticateUser(credentials.username, credentials.password);
+            return token;
         });
     }
     /**
@@ -97,16 +97,14 @@ let UserResolver = class UserResolver {
             //TODO: "Sign up and send JWT"
             let newUser = new db_1.User({
                 username: user.username,
-                firstname: user.firstname,
-                lastname: user.lastname,
                 password: user.password,
                 roles: user.roles,
                 email: user.email,
             });
             // returns a JWT that can then be used to verify a user
-            return newUser.save().then(() => {
-                return authentication_1.generateToken(user.username, user.password).token;
-            });
+            yield newUser.save();
+            let token = yield authentication_1.generateToken(user.username, user.roles);
+            return token;
         });
     }
     //TODO: "Sign up and send JWT"
@@ -140,7 +138,4 @@ UserResolver = __decorate([
     type_graphql_1.Resolver((of) => schema_1.UserType)
 ], UserResolver);
 exports.default = UserResolver;
-function Admin() {
-    throw new Error("Function not implemented.");
-}
 //# sourceMappingURL=UserResolver.js.map
