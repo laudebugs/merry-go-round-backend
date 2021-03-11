@@ -76,20 +76,9 @@ Credentials = __decorate([
 ], Credentials);
 exports.Credentials = Credentials;
 let UserResolver = class UserResolver {
-    //@ts-ignore
-    login(username) {
-        db_1.User.find({ username: username })
-            .then((user) => {
-            // TODO: Authenticate the user
-            return user;
-        })
-            .catch((error) => {
-            console.log(error.message);
-            return null;
-        });
-    }
     /**
-     *
+     * The Sign in mutation - signs in a user
+     * And returns a JWt
      * @param credentials
      * @return token | null -> valid | invalid
      */
@@ -99,6 +88,10 @@ let UserResolver = class UserResolver {
             return auth.token;
         });
     }
+    /**
+     *
+     * @param user
+     */
     signup(user) {
         return __awaiter(this, void 0, void 0, function* () {
             //TODO: "Sign up and send JWT"
@@ -122,12 +115,6 @@ let UserResolver = class UserResolver {
         return "";
     }
 };
-__decorate([
-    type_graphql_1.Query((returns) => String, { nullable: true }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", String)
-], UserResolver.prototype, "login", null);
 __decorate([
     type_graphql_1.Mutation((returns) => String, { nullable: true }),
     __param(0, type_graphql_1.Arg("credentials")),

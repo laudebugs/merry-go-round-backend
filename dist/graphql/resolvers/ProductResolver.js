@@ -47,6 +47,10 @@ __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
 ], ProductInput.prototype, "photo", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], ProductInput.prototype, "owner", void 0);
 ProductInput = __decorate([
     type_graphql_1.InputType({ description: "A Product Input" })
 ], ProductInput);
@@ -67,6 +71,7 @@ let ProductResolver = class ProductResolver {
                 awardee: null,
                 photo: product.photo,
                 bids: [],
+                owner: product.owner,
             });
             yield newProduct.save();
             return newProduct;

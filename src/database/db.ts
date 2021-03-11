@@ -59,7 +59,7 @@ const ProductSchema = new Schema({
   description: String,
   photo: String,
   // @ts-ignore
-
+  owner: String,
   bids: [{ type: Schema.ObjectId, ref: "Bid" }],
 });
 const BidSchema = new Schema({

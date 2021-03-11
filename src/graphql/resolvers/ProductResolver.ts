@@ -24,6 +24,9 @@ export class ProductInput {
 
   @Field()
   photo?: String;
+
+  @Field()
+  owner: String;
 }
 
 @Resolver((of) => ProductType)
@@ -47,6 +50,7 @@ export default class ProductResolver {
       awardee: null,
       photo: product.photo,
       bids: [],
+      owner: product.owner,
     });
     await newProduct.save();
     return newProduct;

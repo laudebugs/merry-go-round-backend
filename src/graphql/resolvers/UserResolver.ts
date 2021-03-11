@@ -4,7 +4,6 @@ import {
   Field,
   InputType,
   Mutation,
-  Query,
   Resolver,
 } from "type-graphql";
 import { authenticateUser, generateToken } from "../../database/authentication";
@@ -46,22 +45,9 @@ export class Credentials {
 
 @Resolver((of) => UserType)
 export default class UserResolver {
-  @Query((returns) => String, { nullable: true })
-  //@ts-ignore
-  login(username): string {
-    User.find({ username: username })
-      .then((user) => {
-        // TODO: Authenticate the user
-        return user;
-      })
-      .catch((error) => {
-        console.log(error.message);
-        return null;
-      });
-  }
-
   /**
-   *
+   * The Sign in mutation - signs in a user
+   * And returns a JWt
    * @param credentials
    * @return token | null -> valid | invalid
    */
@@ -75,6 +61,10 @@ export default class UserResolver {
     return auth.token;
   }
 
+  /**
+   *
+   * @param user
+   */
   @Mutation()
   //@ts-ignore
   async signup(@Arg("user") user: UserInput): String | null {
