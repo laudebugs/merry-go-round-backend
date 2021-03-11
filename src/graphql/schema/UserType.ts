@@ -1,16 +1,16 @@
 import { Authorized, Field, ObjectType } from "type-graphql";
-import { BidType, Role } from "./";
+import { Role } from "./";
 
 @ObjectType()
 export default class UserType {
   @Field()
-  _id?: number;
+  _id?: Number;
 
   @Field()
   username: String;
 
-  @Field((type) => [BidType])
-  bids: [BidType];
+  @Field((type) => [String])
+  bids: [String];
 
   @Field()
   tickets: Number;

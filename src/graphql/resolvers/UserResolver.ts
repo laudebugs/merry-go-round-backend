@@ -52,7 +52,10 @@ export default class UserResolver {
    * @param credentials
    * @return token | null -> valid | invalid
    */
-  @Mutation((returns) => String, { nullable: true })
+  @Mutation((returns) => String, {
+    nullable: true,
+    description: "Signs in a user",
+  })
   //@ts-ignore
   async signin(@Arg("credentials") credentials: Credentials) {
     let token: string | Error = await authenticateUser(
@@ -66,7 +69,7 @@ export default class UserResolver {
    *
    * @param user
    */
-  @Mutation()
+  @Mutation({ description: "Signs up a user" })
   //@ts-ignore
   async signup(@Arg("user") user: UserInput): String | null {
     //TODO: "Sign up and send JWT"
@@ -82,7 +85,10 @@ export default class UserResolver {
     return token;
   }
   @Authorized()
-  @Mutation((returns) => String, { nullable: true })
+  @Mutation((returns) => String, {
+    nullable: true,
+    description: "Signs out a user",
+  })
   //TODO: "Sign up and send JWT"
   signout(jwt: String) {
     // Deauthorize the JWT

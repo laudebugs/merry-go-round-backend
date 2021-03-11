@@ -32,14 +32,18 @@ export class ProductInput {
 @Resolver((of) => ProductType)
 export default class ProductResolver {
   // @Authorized()
-  @Query((returns) => [ProductType])
+  @Query((returns) => [ProductType], {
+    description: "Gets all the products in the database",
+  })
   async getProducts(): Promise<ProductType[]> {
     let products: ProductType[] | any = await Product.find();
     return products;
   }
 
   @Authorized(["ADMIN"])
-  @Mutation((returns) => ProductType)
+  @Mutation((returns) => ProductType, {
+    description: "Adds a product to the database",
+  })
   async addProduct(
     @Arg("product") product: ProductInput
   ): Promise<ProductType> {
@@ -56,7 +60,9 @@ export default class ProductResolver {
     return newProduct;
   }
 
-  @Mutation((returns) => ProductType)
+  @Mutation((returns) => ProductType, {
+    description: "Awards a product to a certain user",
+  })
   async award(
     @Arg("productId", { nullable: true }) productId?: string,
     @Arg("username", { nullable: true }) username?: string

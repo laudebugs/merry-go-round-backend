@@ -3,7 +3,7 @@ import { BidType, UserType } from "./";
 @ObjectType()
 export default class ProductType {
   @Field()
-  _id: number;
+  _id: Number;
 
   @Field()
   name: String;

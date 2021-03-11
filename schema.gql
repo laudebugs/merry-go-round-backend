@@ -25,13 +25,28 @@ input Credentials {
 }
 
 type Mutation {
+  """Adds a product to the database"""
   addProduct(product: ProductInput!): ProductType!
+
+  """Awards a product to a certain user"""
   award(productId: String, username: String): ProductType!
+
+  """changes the amount on a bid"""
   changeBid(bid: BidInput!): BidType!
-  deleteBid: BidType!
+
+  """Deletes a bid that a user made"""
+  deleteBid(bid: BidInput!): BidType!
+
+  """Makes a bid for a user"""
   makeBid(bid: BidInput!): BidType!
+
+  """Signs in a user"""
   signin(credentials: Credentials!): String
+
+  """Signs out a user"""
   signout: String
+
+  """Signs up a user"""
   signup(user: UserInput!): String!
 }
 
@@ -56,8 +71,17 @@ type ProductType {
 }
 
 type Query {
+  """Returns all bids"""
   getBids: [BidType!]!
+
+  """Returns all the bids of a certain product"""
+  getProductBids: [BidType!]!
+
+  """Gets all the products in the database"""
   getProducts: [ProductType!]!
+
+  """Get a particular user's bids"""
+  getUserBids: [BidType!]!
 }
 
 """Roles of a User based on access"""
@@ -83,7 +107,7 @@ input UserInput {
 type UserType {
   _id: Float!
   award: Float!
-  bids: [BidType!]!
+  bids: [String!]!
   roles: Role
   tickets: Float!
   username: String!

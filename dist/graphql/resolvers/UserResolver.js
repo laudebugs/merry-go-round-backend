@@ -114,14 +114,17 @@ let UserResolver = class UserResolver {
     }
 };
 __decorate([
-    type_graphql_1.Mutation((returns) => String, { nullable: true }),
+    type_graphql_1.Mutation((returns) => String, {
+        nullable: true,
+        description: "Signs in a user",
+    }),
     __param(0, type_graphql_1.Arg("credentials")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Credentials]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "signin", null);
 __decorate([
-    type_graphql_1.Mutation(),
+    type_graphql_1.Mutation({ description: "Signs up a user" }),
     __param(0, type_graphql_1.Arg("user")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [UserInput]),
@@ -129,7 +132,10 @@ __decorate([
 ], UserResolver.prototype, "signup", null);
 __decorate([
     type_graphql_1.Authorized(),
-    type_graphql_1.Mutation((returns) => String, { nullable: true }),
+    type_graphql_1.Mutation((returns) => String, {
+        nullable: true,
+        description: "Signs out a user",
+    }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)

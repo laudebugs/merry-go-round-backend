@@ -61,7 +61,7 @@ const ProductSchema = new Schema({
   bids: [{ type: Schema.ObjectId, ref: "Bid" }],
 });
 const BidSchema = new Schema({
-  product: Number,
+  productId: Number,
   tickets: Number,
   // @ts-ignore
 
@@ -88,6 +88,15 @@ UserSchema.methods.comparePassword = async function comparePassword(candidate) {
   return bcrypt.compare(candidate, this.password);
 };
 
+BidSchema.pre("remove", async function preRemove(next) {
+  const bid: typeof Bid | any = this;
+  const product: typeof Product | any = await Product.findById(
+    mongoose.Types.ObjectId(bid.productId)
+  );
+  product.bids = product.bids.filter((bidId) => bidId !== bid._id);
+
+  await product.save();
+});
 const User = mongoose.model("User", UserSchema);
 const Bid = mongoose.model("Bid", BidSchema);
 const Product = mongoose.model("Product", ProductSchema);

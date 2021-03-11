@@ -2,13 +2,13 @@ import { Field, ObjectType } from "type-graphql";
 @ObjectType()
 export default class BidType {
   @Field()
-  _id: number;
+  _id: Number;
 
   @Field()
-  productId: number;
+  productId: Number;
 
   @Field()
-  tickets: number;
+  tickets: Number;
 
   @Field()
   user: String;

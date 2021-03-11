@@ -20,8 +20,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidInput = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
 const type_graphql_1 = require("type-graphql");
 const db_1 = require("../../database/db");
 const schema_1 = require("../schema");
@@ -55,6 +59,26 @@ let BidResolver = class BidResolver {
             return bids;
         });
     }
+    getUserBids(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let user = yield db_1.User.find({ username: username });
+            let bids = Promise.all(user.bids.map((bidId) => __awaiter(this, void 0, void 0, function* () {
+                let bid = yield db_1.Bid.findById(mongoose_1.default.Types.ObjectId(bidId));
+                return bid;
+            })));
+            return bids;
+        });
+    }
+    getProductBids(productId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let product = yield db_1.Product.findById(mongoose_1.default.Types.ObjectId(productId));
+            let bids = Promise.all(product.bids.map((bidId) => __awaiter(this, void 0, void 0, function* () {
+                let bid = yield db_1.Bid.findById(mongoose_1.default.Types.ObjectId(bidId));
+                return bid;
+            })));
+            return bids;
+        });
+    }
     makeBid(bid) {
         return __awaiter(this, void 0, void 0, function* () {
             let newBid = new db_1.Bid({
@@ -62,53 +86,94 @@ let BidResolver = class BidResolver {
                 tickets: bid.tickets,
                 user: bid.user,
             });
-            newBid.save();
+            let product = db_1.Product.findById(mongoose_1.default.Types.ObjectId(bid.productId));
+            product.bids.push(newBid._id);
+            let user = db_1.User.find({ username: bid.user });
+            user.tickets -= bid.tickets;
+            yield product.save();
+            yield newBid.save();
+            yield user.save();
             return newBid;
         });
     }
-    /* changes the amount on a bid */
     changeBid(bid) {
         return __awaiter(this, void 0, void 0, function* () {
             let thisBid = yield db_1.Bid.findById(bid._id);
+            let thisUser = db_1.User.find({ username: bid.user });
+            thisUser.tickets += thisBid.tickets - bid.tickets;
             thisBid.tickets = bid.tickets;
+            thisBid.save();
+            thisUser.save();
             return thisBid;
         });
     }
     deleteBid(bid) {
         return __awaiter(this, void 0, void 0, function* () {
-            let thisBid = yield db_1.Bid.findById(bid._id);
-            thisBid.tickets = bid.tickets;
-            // remove the bid
-            TODO: "Check that all references to the bid have been removed";
+            let thisBid = yield db_1.Bid.findById(mongoose_1.default.Types.ObjectId(bid._id));
+            let thisUser = yield db_1.User.find({ username: bid.user });
+            // Add the tickets to the user
+            thisUser.ticket += thisBid.tickets;
+            // Remove the bids from the list of the user's bids
+            thisUser.bids = thisUser.bids.filter((id) => id !== bid._id);
+            // Save the User
+            yield thisUser.save();
+            // remove the bid - and all references to the bid
             db_1.Bid.remove(thisBid);
-            return thisBid;
+            return thisUser;
         });
     }
 };
 __decorate([
-    type_graphql_1.Query((returns) => [schema_1.BidType]),
+    type_graphql_1.Authorized(),
+    type_graphql_1.Query((returns) => [schema_1.BidType], { description: "Returns all bids" }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], BidResolver.prototype, "getBids", null);
 __decorate([
-    type_graphql_1.Mutation((returns) => schema_1.BidType),
+    type_graphql_1.Authorized(),
+    type_graphql_1.Query((returns) => [schema_1.BidType], {
+        description: "Get a particular user's bids",
+    }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], BidResolver.prototype, "getUserBids", null);
+__decorate([
+    type_graphql_1.Authorized(["ADMIN"]),
+    type_graphql_1.Query((returns) => [schema_1.BidType], {
+        description: "Returns all the bids of a certain product",
+    }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], BidResolver.prototype, "getProductBids", null);
+__decorate([
+    type_graphql_1.Authorized(),
+    type_graphql_1.Mutation((returns) => schema_1.BidType, { description: "Makes a bid for a user" }),
     __param(0, type_graphql_1.Arg("bid")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [BidInput]),
     __metadata("design:returntype", Promise)
 ], BidResolver.prototype, "makeBid", null);
 __decorate([
-    type_graphql_1.Mutation((returns) => schema_1.BidType),
+    type_graphql_1.Authorized(),
+    type_graphql_1.Mutation((returns) => schema_1.BidType, {
+        description: "changes the amount on a bid",
+    }),
     __param(0, type_graphql_1.Arg("bid")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [BidInput]),
     __metadata("design:returntype", Promise)
 ], BidResolver.prototype, "changeBid", null);
 __decorate([
-    type_graphql_1.Mutation((returns) => schema_1.BidType),
+    type_graphql_1.Authorized(),
+    type_graphql_1.Mutation((returns) => schema_1.BidType, {
+        description: "Deletes a bid that a user made",
+    }),
+    __param(0, type_graphql_1.Arg("bid")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [schema_1.BidType]),
+    __metadata("design:paramtypes", [BidInput]),
     __metadata("design:returntype", Promise)
 ], BidResolver.prototype, "deleteBid", null);
 BidResolver = __decorate([

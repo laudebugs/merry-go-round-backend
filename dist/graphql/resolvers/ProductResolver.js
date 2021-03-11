@@ -88,21 +88,27 @@ let ProductResolver = class ProductResolver {
     }
 };
 __decorate([
-    type_graphql_1.Query((returns) => [schema_1.ProductType]),
+    type_graphql_1.Query((returns) => [schema_1.ProductType], {
+        description: "Gets all the products in the database",
+    }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "getProducts", null);
 __decorate([
     type_graphql_1.Authorized(["ADMIN"]),
-    type_graphql_1.Mutation((returns) => schema_1.ProductType),
+    type_graphql_1.Mutation((returns) => schema_1.ProductType, {
+        description: "Adds a product to the database",
+    }),
     __param(0, type_graphql_1.Arg("product")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [ProductInput]),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "addProduct", null);
 __decorate([
-    type_graphql_1.Mutation((returns) => schema_1.ProductType),
+    type_graphql_1.Mutation((returns) => schema_1.ProductType, {
+        description: "Awards a product to a certain user",
+    }),
     __param(0, type_graphql_1.Arg("productId", { nullable: true })),
     __param(1, type_graphql_1.Arg("username", { nullable: true })),
     __metadata("design:type", Function),

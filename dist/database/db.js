@@ -71,7 +71,7 @@ const ProductSchema = new Schema({
     bids: [{ type: Schema.ObjectId, ref: "Bid" }],
 });
 const BidSchema = new Schema({
-    product: Number,
+    productId: Number,
     tickets: Number,
     // @ts-ignore
     user: String,
@@ -99,6 +99,14 @@ UserSchema.methods.comparePassword = function comparePassword(candidate) {
         return bcrypt_1.default.compare(candidate, this.password);
     });
 };
+BidSchema.pre("remove", function preRemove(next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const bid = this;
+        const product = yield Product.findById(mongoose_1.default.Types.ObjectId(bid.productId));
+        product.bids = product.bids.filter((bidId) => bidId !== bid._id);
+        yield product.save();
+    });
+});
 const User = mongoose_1.default.model("User", UserSchema);
 exports.User = User;
 const Bid = mongoose_1.default.model("Bid", BidSchema);
