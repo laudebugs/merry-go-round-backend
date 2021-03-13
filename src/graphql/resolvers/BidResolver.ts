@@ -25,6 +25,7 @@ export class BidInput {
   @Field()
   user: String;
 }
+
 @Resolver((of) => BidType)
 export default class BidResolver {
   @Authorized()

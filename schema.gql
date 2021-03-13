@@ -62,9 +62,8 @@ input ProductInput {
 type ProductType {
   _id: Float!
   awardee: UserType!
-  bids: [BidType!]!
+  bids: [String!]!
   description: String!
-  id: Float!
   name: String!
   owner: String!
   photo: String!

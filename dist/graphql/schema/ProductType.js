@@ -22,15 +22,11 @@ __decorate([
     __metadata("design:type", String)
 ], ProductType.prototype, "name", void 0);
 __decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", Number)
-], ProductType.prototype, "id", void 0);
-__decorate([
     type_graphql_1.Field((type) => _1.UserType),
     __metadata("design:type", _1.UserType)
 ], ProductType.prototype, "awardee", void 0);
 __decorate([
-    type_graphql_1.Field((type) => [_1.BidType]),
+    type_graphql_1.Field((type) => [String]),
     __metadata("design:type", Array)
 ], ProductType.prototype, "bids", void 0);
 __decorate([
