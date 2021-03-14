@@ -12,7 +12,7 @@ input BidInput {
 }
 
 type BidType {
-  _id: Float!
+  _id: String!
   productId: Float!
   tickets: Float!
   user: String!
@@ -60,7 +60,7 @@ input ProductInput {
 }
 
 type ProductType {
-  _id: Float!
+  _id: String!
   awardee: UserType!
   bids: [String!]!
   description: String!
@@ -104,7 +104,7 @@ input UserInput {
 }
 
 type UserType {
-  _id: Float!
+  _id: String!
   award: Float!
   bids: [String!]!
   roles: Role

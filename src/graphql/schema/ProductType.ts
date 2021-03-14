@@ -3,7 +3,7 @@ import { UserType } from "./";
 @ObjectType()
 export default class ProductType {
   @Field()
-  _id: Number;
+  _id: String;
 
   @Field()
   name: String;

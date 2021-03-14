@@ -15,7 +15,7 @@ let UserType = class UserType {
 };
 __decorate([
     type_graphql_1.Field(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], UserType.prototype, "_id", void 0);
 __decorate([
     type_graphql_1.Field(),

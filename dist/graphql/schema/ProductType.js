@@ -15,7 +15,7 @@ let ProductType = class ProductType {
 };
 __decorate([
     type_graphql_1.Field(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], ProductType.prototype, "_id", void 0);
 __decorate([
     type_graphql_1.Field(),

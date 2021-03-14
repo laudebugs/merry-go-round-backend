@@ -4,7 +4,7 @@ import { Role } from "./";
 @ObjectType()
 export default class UserType {
   @Field()
-  _id?: Number;
+  _id?: String;
 
   @Field()
   username: String;

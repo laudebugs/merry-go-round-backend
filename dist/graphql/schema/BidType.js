@@ -14,7 +14,7 @@ let BidType = class BidType {
 };
 __decorate([
     type_graphql_1.Field(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], BidType.prototype, "_id", void 0);
 __decorate([
     type_graphql_1.Field(),
