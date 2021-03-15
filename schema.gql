@@ -92,6 +92,10 @@ enum Role {
   SUPER
 }
 
+type Subscription {
+  productAdded: ProductType!
+}
+
 """A User Input"""
 input UserInput {
   _id: Float

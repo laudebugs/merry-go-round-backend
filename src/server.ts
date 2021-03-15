@@ -34,6 +34,7 @@ require("./database/db");
       const user = verifyToken(token);
       return user;
     },
+    subscriptions: "/subs",
   });
 
   server.applyMiddleware({ app });

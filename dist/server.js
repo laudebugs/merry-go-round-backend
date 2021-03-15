@@ -42,6 +42,7 @@ require("./database/db");
                 const user = authentication_1.verifyToken(token);
                 return user;
             },
+            subscriptions: "/subs",
         });
         server.applyMiddleware({ app });
         const PORT = 7000;

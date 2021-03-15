@@ -55,6 +55,11 @@ ProductInput = __decorate([
     type_graphql_1.InputType({ description: "A Product Input" })
 ], ProductInput);
 exports.ProductInput = ProductInput;
+let ProductArgs = class ProductArgs extends schema_1.ProductType {
+};
+ProductArgs = __decorate([
+    type_graphql_1.ArgsType()
+], ProductArgs);
 let ProductResolver = class ProductResolver {
     // @Authorized()
     getProducts() {
@@ -63,7 +68,8 @@ let ProductResolver = class ProductResolver {
             return products;
         });
     }
-    addProduct(product) {
+    // @Authorized(["ADMIN"])
+    addProduct(product, pubSub, publish) {
         return __awaiter(this, void 0, void 0, function* () {
             TODO: "Why use any here?";
             let newProduct = new db_1.Product({
@@ -75,6 +81,8 @@ let ProductResolver = class ProductResolver {
                 owner: product.owner,
             });
             yield newProduct.save();
+            yield pubSub.publish("PRODUCT", newProduct);
+            yield publish(newProduct);
             return newProduct;
         });
     }
@@ -86,6 +94,11 @@ let ProductResolver = class ProductResolver {
             return product;
         });
     }
+    productAdded(productPayload, args) {
+        console.log(productPayload);
+        console.log(args);
+        return Object.assign({}, productPayload);
+    }
 };
 __decorate([
     type_graphql_1.Query((returns) => [schema_1.ProductType], {
@@ -96,13 +109,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "getProducts", null);
 __decorate([
-    type_graphql_1.Authorized(["ADMIN"]),
     type_graphql_1.Mutation((returns) => schema_1.ProductType, {
         description: "Adds a product to the database",
     }),
     __param(0, type_graphql_1.Arg("product")),
+    __param(1, type_graphql_1.PubSub()),
+    __param(2, type_graphql_1.PubSub("PRODUCT")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [ProductInput]),
+    __metadata("design:paramtypes", [ProductInput,
+        type_graphql_1.PubSubEngine, Function]),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "addProduct", null);
 __decorate([
@@ -115,6 +130,17 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "award", null);
+__decorate([
+    type_graphql_1.Subscription({
+        topics: "PRODUCT",
+    }),
+    __param(0, type_graphql_1.Root()),
+    __param(1, type_graphql_1.Args()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [schema_1.ProductType,
+        ProductArgs]),
+    __metadata("design:returntype", schema_1.ProductType)
+], ProductResolver.prototype, "productAdded", null);
 ProductResolver = __decorate([
     type_graphql_1.Resolver((of) => schema_1.ProductType)
 ], ProductResolver);
