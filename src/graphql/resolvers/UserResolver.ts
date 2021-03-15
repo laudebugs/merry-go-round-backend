@@ -23,12 +23,6 @@ export class UserInput {
   email: String;
 
   @Field()
-  firstname: String;
-
-  @Field()
-  lastname: String;
-
-  @Field()
   password: String;
 
   @Authorized(["SUPER"])
@@ -76,7 +70,6 @@ export default class UserResolver {
     let newUser: UserType | any = new User({
       username: user.username,
       password: user.password,
-      roles: user.roles,
       email: user.email,
     });
     // returns a JWT that can then be used to verify a user

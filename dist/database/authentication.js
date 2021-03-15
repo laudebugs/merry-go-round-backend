@@ -53,9 +53,8 @@ const generateToken = (username, roles) => {
     const token = jsonwebtoken_1.default.sign({
         username: username,
         roles: roles,
-        // A token that expires in 1 day
-        iat: 1516234022,
-    }, process.env.JWT_SECRET);
+        iat: Math.floor(Date.now()),
+    }, process.env.JWT_SECRET, { expiresIn: "24h" });
     return token;
 };
 exports.generateToken = generateToken;

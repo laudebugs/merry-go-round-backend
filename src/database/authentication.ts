@@ -48,10 +48,10 @@ export const generateToken = (username, roles): string => {
     {
       username: username,
       roles: roles,
-      // A token that expires in 1 day
-      iat: 1516234022,
+      iat: Math.floor(Date.now()),
     },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    { expiresIn: "24h" }
   );
   return token;
 };

@@ -26,7 +26,7 @@ export class ProductInput {
   photo?: String;
 
   @Field()
-  owner: String;
+  owner?: String;
 }
 
 @Resolver((of) => ProductType)

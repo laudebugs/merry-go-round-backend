@@ -43,14 +43,6 @@ __decorate([
 __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
-], UserInput.prototype, "firstname", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", String)
-], UserInput.prototype, "lastname", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", String)
 ], UserInput.prototype, "password", void 0);
 __decorate([
     type_graphql_1.Authorized(["SUPER"]),
@@ -98,7 +90,6 @@ let UserResolver = class UserResolver {
             let newUser = new db_1.User({
                 username: user.username,
                 password: user.password,
-                roles: user.roles,
                 email: user.email,
             });
             // returns a JWT that can then be used to verify a user

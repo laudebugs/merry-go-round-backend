@@ -96,8 +96,6 @@ enum Role {
 input UserInput {
   _id: Float
   email: String!
-  firstname: String!
-  lastname: String!
   password: String!
   roles: Role
   username: String!
