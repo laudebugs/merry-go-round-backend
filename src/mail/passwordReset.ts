@@ -1,15 +1,25 @@
 import emailClient from "./emailClient";
-import { psalms } from "./passes";
 
-let random = Math.floor(Math.random() * psalms.phrases.length);
-export async function sendResetEmail(recipient: string) {
+export async function sendResetEmail(
+  recipient: String,
+  username: String,
+  password: String
+) {
   try {
     let info = await emailClient.sendMail({
       from: '"Laurence (RUF Coffee House Support)" lbi213@nyu.edu', // sender address
-      to: recipient, // list of receivers
-      subject: "Password Reset", // Subject line
-      text: `Here's your new password: ${psalms.phrases[random]}`, // plain text body
-      html: "<b>Hello world?</b>", // html body
+      to: recipient,
+      subject: "Password Reset Request",
+      text: `Here are your new credentials: 
+                    username: ${username} 
+                    password: ${password}
+            `,
+      html: `<div>
+              <p> Here are your new credentials:</p>
+                <p>username: ${username}</p>
+                <p>password: ${password}</p>
+              </div>
+          `,
     });
 
     console.log("Message sent: %s", info.messageId);
