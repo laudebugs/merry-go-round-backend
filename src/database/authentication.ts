@@ -1,8 +1,10 @@
 import jwt from "jsonwebtoken";
+import { UserType } from "../graphql/schema";
 import { Error } from "../graphql/schema/Error";
 import { User } from "./db";
+import { psalms } from "./passes";
 
-require("dotenv").config("../../");
+let conf = require("dotenv").config("../../").parsed;
 
 /**
  * A function to authenticate a user
@@ -50,7 +52,7 @@ export const generateToken = (username, roles): string => {
       roles: roles,
       iat: Math.floor(Date.now()),
     },
-    process.env.JWT_SECRET,
+    conf.JWT_SECRET,
     { expiresIn: "24h" }
   );
   return token;
@@ -62,7 +64,7 @@ export const generateToken = (username, roles): string => {
  */
 export const verifyToken = (token: string) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, conf.JWT_SECRET);
     return decoded;
   } catch (e) {
     return null;
@@ -75,11 +77,28 @@ export const verifyToken = (token: string) => {
  */
 export const getAuthenticatedUser = async (token: String) => {
   try {
-    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let decoded = jwt.verify(token, conf.JWT_SECRET);
     let user = await User.find({ username: decoded.username });
     return user;
   } catch (error) {
     console.log(error.message);
     return null;
+  }
+};
+export const resetPassword = async (email: String) => {
+  try {
+    let user: UserType | any = await User.findOne({ email: email });
+
+    let random = Math.floor(Math.random() * psalms.phrases.length);
+    let randomPass = psalms.phrases[random];
+
+    user.password = randomPass;
+
+    await user.save();
+
+    return [user.username, randomPass];
+  } catch (error) {
+    console.log(error);
+    return [null, null];
   }
 };

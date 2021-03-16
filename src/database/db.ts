@@ -4,9 +4,9 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const SALT_ROUNDS = 16;
-require("dotenv").config("../../");
+let conf = require("dotenv").config("../../").parsed;
 //@ts-ignore
-const dbconf: String = process.env.MONGO_DB;
+const dbconf: String = conf.MONGO_DB;
 
 //@ts-ignore
 mongoose.connect(dbconf, {
@@ -50,6 +50,7 @@ const UserSchema = new Schema({
 
   award: { type: Schema.ObjectId, ref: "Award" },
   roles: [String],
+  avatar: Number,
 });
 const ProductSchema = new Schema({
   name: String,

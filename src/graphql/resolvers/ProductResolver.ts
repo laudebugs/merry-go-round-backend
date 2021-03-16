@@ -1,13 +1,5 @@
 import mongoose from "mongoose";
-import {
-  Arg,
-  Authorized,
-  Field,
-  InputType,
-  Mutation,
-  Query,
-  Resolver,
-} from "type-graphql";
+import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { Product } from "../../database/db";
 import { ProductType } from "../schema";
 
@@ -40,7 +32,7 @@ export default class ProductResolver {
     return products;
   }
 
-  @Authorized(["ADMIN"])
+  // @Authorized(["ADMIN"])
   @Mutation((returns) => ProductType, {
     description: "Adds a product to the database",
   })

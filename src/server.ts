@@ -37,7 +37,6 @@ require("./database/db");
   });
 
   server.applyMiddleware({ app });
-
   const PORT = 7000;
   app.listen(PORT, () => {
     console.log(`api is running on port ${PORT}`);

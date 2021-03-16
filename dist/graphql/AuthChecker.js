@@ -7,6 +7,14 @@ exports.AuthCheckerFn = void 0;
  * @param roles
  */
 const AuthCheckerFn = ({ root, args, context, info }, roles) => {
+    // If no roles are required
+    if (roles.length == 0) {
+        return true;
+    }
+    //@ts-ignore
+    if (!context.roles) {
+        return false;
+    }
     // For Super Users - they can access everything
     //@ts-ignore
     if (context.roles.includes("0")) {
@@ -15,10 +23,6 @@ const AuthCheckerFn = ({ root, args, context, info }, roles) => {
     // For Moderators \
     //@ts-ignore
     if (roles.includes("ADMIN") && context.roles.includes("1")) {
-        return true;
-    }
-    // If no roles are required
-    if (roles.length == 0) {
         return true;
     }
     // If none of the above checks pass

@@ -42,6 +42,9 @@ type Mutation {
   """Makes a bid for a user"""
   makeBid(bid: BidInput!): BidType!
 
+  """Requests a new password"""
+  resetPassword(email: String!): Boolean
+
   """Signs in a user"""
   signin(credentials: Credentials!): String
 
@@ -81,6 +84,9 @@ type Query {
   """Gets all the products in the database"""
   getProducts: [ProductType!]!
 
+  """Returns a user based on a user's username"""
+  getUser(username: String!): UserType
+
   """Get a particular user's bids"""
   getUserBids: [BidType!]!
 }
@@ -97,6 +103,7 @@ enum Role {
 """A User Input"""
 input UserInput {
   _id: Float
+  avatar: Float!
   email: String!
   password: String!
   roles: Role
@@ -105,8 +112,10 @@ input UserInput {
 
 type UserType {
   _id: String!
+  avatar: Float!
   award: Float!
   bids: [String!]!
+  email: String!
   roles: Role
   tickets: Float!
   username: String!

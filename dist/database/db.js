@@ -18,9 +18,9 @@ const email_validator_1 = __importDefault(require("email-validator"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const Schema = mongoose_1.default.Schema;
 const SALT_ROUNDS = 16;
-require("dotenv").config("../../");
+let conf = require("dotenv").config("../../").parsed;
 //@ts-ignore
-const dbconf = process.env.MONGO_DB;
+const dbconf = conf.MONGO_DB;
 //@ts-ignore
 mongoose_1.default.connect(dbconf, {
     useNewUrlParser: true,
@@ -60,6 +60,7 @@ const UserSchema = new Schema({
     // @ts-ignore
     award: { type: Schema.ObjectId, ref: "Award" },
     roles: [String],
+    avatar: Number,
 });
 const ProductSchema = new Schema({
     name: String,

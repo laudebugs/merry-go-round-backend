@@ -63,6 +63,7 @@ let ProductResolver = class ProductResolver {
             return products;
         });
     }
+    // @Authorized(["ADMIN"])
     addProduct(product) {
         return __awaiter(this, void 0, void 0, function* () {
             TODO: "Why use any here?";
@@ -96,7 +97,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "getProducts", null);
 __decorate([
-    type_graphql_1.Authorized(["ADMIN"]),
     type_graphql_1.Mutation((returns) => schema_1.ProductType, {
         description: "Adds a product to the database",
     }),
