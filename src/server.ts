@@ -37,6 +37,10 @@ require("./database/db");
   });
 
   server.applyMiddleware({ app });
+
+  app.get("*", (req: any, res: any) => {
+    res.json({ messsage: "welcome to lau de bugs's api" });
+  });
   const PORT = 7000;
   app.listen(PORT, () => {
     console.log(`api is running on port ${PORT}`);
