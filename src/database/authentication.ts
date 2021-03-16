@@ -4,7 +4,7 @@ import { Error } from "../graphql/schema/Error";
 import { User } from "./db";
 import { psalms } from "./passes";
 
-let conf = require("dotenv").config("../../").parsed;
+// let conf = require("dotenv").config("../../").parsed;
 
 /**
  * A function to authenticate a user
@@ -52,7 +52,7 @@ export const generateToken = (username, roles): string => {
       roles: roles,
       iat: Math.floor(Date.now()),
     },
-    conf.JWT_SECRET,
+    process.env.JWT_SECRET,
     { expiresIn: "24h" }
   );
   return token;
@@ -64,7 +64,7 @@ export const generateToken = (username, roles): string => {
  */
 export const verifyToken = (token: string) => {
   try {
-    const decoded = jwt.verify(token, conf.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     return decoded;
   } catch (e) {
     return null;
@@ -77,7 +77,7 @@ export const verifyToken = (token: string) => {
  */
 export const getAuthenticatedUser = async (token: String) => {
   try {
-    let decoded = jwt.verify(token, conf.JWT_SECRET);
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
     let user = await User.find({ username: decoded.username });
     return user;
   } catch (error) {

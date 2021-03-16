@@ -4,9 +4,9 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const SALT_ROUNDS = 16;
-let conf = require("dotenv").config("../../").parsed;
+// require("dotenv").config("../../").parsed;
 //@ts-ignore
-const dbconf: String = conf.MONGO_DB;
+const dbconf: String = process.env.MONGO_DB;
 
 //@ts-ignore
 mongoose.connect(dbconf, {
