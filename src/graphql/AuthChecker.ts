@@ -9,11 +9,13 @@ export const AuthCheckerFn: AuthChecker = (
   roles
 ) => {
   // For Super Users - they can access everything
-  if (context[0].roles.includes("0")) {
+  //@ts-ignore
+  if (context.roles.includes("0")) {
     return true;
   }
-  // For Moderators
-  if (roles.includes("ADMIN") && context[0].roles.includes("1")) {
+  // For Moderators \
+  //@ts-ignore
+  if (roles.includes("ADMIN") && context.roles.includes("1")) {
     return true;
   }
   // If no roles are required

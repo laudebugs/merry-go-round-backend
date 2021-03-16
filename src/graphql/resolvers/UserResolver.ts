@@ -71,6 +71,7 @@ export default class UserResolver {
       username: user.username,
       password: user.password,
       email: user.email,
+      tickets: 5,
     });
     // returns a JWT that can then be used to verify a user
     await newUser.save();

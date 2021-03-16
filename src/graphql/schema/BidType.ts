@@ -5,11 +5,14 @@ export default class BidType {
   _id: String;
 
   @Field()
-  productId: Number;
+  productId: String;
 
   @Field()
   tickets: Number;
 
   @Field()
   user: String;
+
+  @Field()
+  submitted: Boolean;
 }

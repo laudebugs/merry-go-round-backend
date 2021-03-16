@@ -17,7 +17,7 @@ export class ProductInput {
   name: String;
 
   @Field({ nullable: true })
-  id?: Number;
+  id?: string;
 
   @Field()
   description?: String;

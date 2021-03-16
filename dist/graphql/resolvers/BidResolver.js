@@ -33,11 +33,11 @@ let BidInput = class BidInput {
 };
 __decorate([
     type_graphql_1.Field({ nullable: true }),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], BidInput.prototype, "_id", void 0);
 __decorate([
     type_graphql_1.Field(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], BidInput.prototype, "productId", void 0);
 __decorate([
     type_graphql_1.Field(),
@@ -47,6 +47,10 @@ __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
 ], BidInput.prototype, "user", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], BidInput.prototype, "submitted", void 0);
 BidInput = __decorate([
     type_graphql_1.InputType({ description: "A Bid Input" })
 ], BidInput);
@@ -86,13 +90,14 @@ let BidResolver = class BidResolver {
                 tickets: bid.tickets,
                 user: bid.user,
             });
-            let product = db_1.Product.findById(mongoose_1.default.Types.ObjectId(bid.productId));
+            let product = yield db_1.Product.findById(mongoose_1.default.Types.ObjectId(bid.productId));
             product.bids.push(newBid._id);
-            let user = db_1.User.find({ username: bid.user });
-            user.tickets -= bid.tickets;
+            let user = yield db_1.User.findOne({ username: bid.user });
+            user.tickets = 5;
             yield product.save();
             yield newBid.save();
             yield user.save();
+            newBid.submitted = newBid.tickets;
             return newBid;
         });
     }

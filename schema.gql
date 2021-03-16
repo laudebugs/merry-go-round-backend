@@ -5,15 +5,17 @@
 
 """A Bid Input"""
 input BidInput {
-  _id: Float
-  productId: Float!
+  _id: String
+  productId: String!
+  submitted: Float!
   tickets: Float!
   user: String!
 }
 
 type BidType {
   _id: String!
-  productId: Float!
+  productId: String!
+  submitted: Boolean!
   tickets: Float!
   user: String!
 }
@@ -53,7 +55,7 @@ type Mutation {
 """A Product Input"""
 input ProductInput {
   description: String!
-  id: Float
+  id: String
   name: String!
   owner: String!
   photo: String!

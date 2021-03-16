@@ -61,7 +61,7 @@ const ProductSchema = new Schema({
   bids: [{ type: Schema.ObjectId, ref: "Bid" }],
 });
 const BidSchema = new Schema({
-  productId: Number,
+  productId: String,
   tickets: Number,
   // @ts-ignore
 

@@ -14,16 +14,19 @@ import { BidType, ProductType, UserType } from "../schema";
 @InputType({ description: "A Bid Input" })
 export class BidInput {
   @Field({ nullable: true })
-  _id?: number;
+  _id?: string;
 
   @Field()
-  productId: number;
+  productId: string;
 
   @Field()
   tickets: number;
 
   @Field()
   user: String;
+
+  @Field()
+  submitted: number;
 }
 
 @Resolver((of) => BidType)
@@ -76,17 +79,18 @@ export default class BidResolver {
       user: bid.user,
     });
 
-    let product: typeof Product | any = Product.findById(
+    let product: typeof Product | any = await Product.findById(
       mongoose.Types.ObjectId(bid.productId)
     );
+
     product.bids.push(newBid._id);
 
-    let user: typeof User | any = User.find({ username: bid.user });
-    user.tickets -= bid.tickets;
-
+    let user: typeof User | any = await User.findOne({ username: bid.user });
+    user.tickets = 5;
     await product.save();
     await newBid.save();
     await user.save();
+    newBid.submitted = newBid.tickets;
     return newBid;
   }
 
