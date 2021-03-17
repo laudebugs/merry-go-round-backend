@@ -1,5 +1,5 @@
 import { Authorized, Field, ObjectType } from "type-graphql";
-import { Role } from "./";
+import { Role } from ".";
 
 @ObjectType()
 export default class UserType {
@@ -13,10 +13,16 @@ export default class UserType {
   bids: [String];
 
   @Field()
+  email?: String;
+
+  @Field()
   tickets: Number;
 
   @Field((type) => Number)
   award: Number;
+
+  @Field()
+  avatar?: Number;
 
   @Authorized(["SUPER"])
   @Field((type) => Role, { nullable: true })

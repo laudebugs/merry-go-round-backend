@@ -18,7 +18,7 @@ __decorate([
 ], BidType.prototype, "_id", void 0);
 __decorate([
     type_graphql_1.Field(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], BidType.prototype, "productId", void 0);
 __decorate([
     type_graphql_1.Field(),
@@ -28,6 +28,10 @@ __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
 ], BidType.prototype, "user", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", Boolean)
+], BidType.prototype, "submitted", void 0);
 BidType = __decorate([
     type_graphql_1.ObjectType()
 ], BidType);

@@ -4,12 +4,8 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const SALT_ROUNDS = 16;
-require("dotenv").config("../../");
-//@ts-ignore
-const dbconf: String = process.env.MONGO_DB;
 
-//@ts-ignore
-mongoose.connect(dbconf, {
+mongoose.connect(process.env.MONGO_DB, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
@@ -50,6 +46,7 @@ const UserSchema = new Schema({
 
   award: { type: Schema.ObjectId, ref: "Award" },
   roles: [String],
+  avatar: Number,
 });
 const ProductSchema = new Schema({
   name: String,
@@ -61,7 +58,7 @@ const ProductSchema = new Schema({
   bids: [{ type: Schema.ObjectId, ref: "Bid" }],
 });
 const BidSchema = new Schema({
-  productId: Number,
+  productId: String,
   tickets: Number,
   // @ts-ignore
 

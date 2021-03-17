@@ -5,15 +5,17 @@
 
 """A Bid Input"""
 input BidInput {
-  _id: Float
-  productId: Float!
+  _id: String
+  productId: String!
+  submitted: Float!
   tickets: Float!
   user: String!
 }
 
 type BidType {
   _id: String!
-  productId: Float!
+  productId: String!
+  submitted: Boolean!
   tickets: Float!
   user: String!
 }
@@ -40,6 +42,9 @@ type Mutation {
   """Makes a bid for a user"""
   makeBid(bid: BidInput!): BidType!
 
+  """Requests a new password"""
+  resetPassword(email: String!): Boolean
+
   """Signs in a user"""
   signin(credentials: Credentials!): String
 
@@ -53,7 +58,7 @@ type Mutation {
 """A Product Input"""
 input ProductInput {
   description: String!
-  id: Float
+  id: String
   name: String!
   owner: String!
   photo: String!
@@ -78,6 +83,9 @@ type Query {
   """Gets all the products in the database"""
   getProducts: [ProductType!]!
 
+  """Returns a user based on a user's username"""
+  getUser(username: String!): UserType
+
   """Get a particular user's bids"""
   getUserBids: [BidType!]!
 }
@@ -98,6 +106,7 @@ type Subscription {
 """A User Input"""
 input UserInput {
   _id: Float
+  avatar: Float!
   email: String!
   password: String!
   roles: Role
@@ -106,8 +115,10 @@ input UserInput {
 
 type UserType {
   _id: String!
+  avatar: Float!
   award: Float!
   bids: [String!]!
+  email: String!
   roles: Role
   tickets: Float!
   username: String!

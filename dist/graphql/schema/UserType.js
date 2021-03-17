@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const type_graphql_1 = require("type-graphql");
-const _1 = require("./");
+const _1 = require(".");
 let UserType = class UserType {
 };
 __decorate([
@@ -27,12 +27,20 @@ __decorate([
 ], UserType.prototype, "bids", void 0);
 __decorate([
     type_graphql_1.Field(),
+    __metadata("design:type", String)
+], UserType.prototype, "email", void 0);
+__decorate([
+    type_graphql_1.Field(),
     __metadata("design:type", Number)
 ], UserType.prototype, "tickets", void 0);
 __decorate([
     type_graphql_1.Field((type) => Number),
     __metadata("design:type", Number)
 ], UserType.prototype, "award", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], UserType.prototype, "avatar", void 0);
 __decorate([
     type_graphql_1.Authorized(["SUPER"]),
     type_graphql_1.Field((type) => _1.Role, { nullable: true }),

@@ -37,7 +37,7 @@ __decorate([
 ], ProductInput.prototype, "name", void 0);
 __decorate([
     type_graphql_1.Field({ nullable: true }),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], ProductInput.prototype, "id", void 0);
 __decorate([
     type_graphql_1.Field(),
