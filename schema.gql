@@ -70,7 +70,6 @@ type ProductType {
   bids: [String!]!
   description: String!
   name: String!
-  owner: String!
   photo: String!
 }
 
@@ -98,6 +97,10 @@ enum Role {
 
   """An Admin has all privilages"""
   SUPER
+}
+
+type Subscription {
+  productAdded: ProductType!
 }
 
 """A User Input"""

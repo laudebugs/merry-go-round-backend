@@ -1,5 +1,19 @@
 import mongoose from "mongoose";
-import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Args,
+  ArgsType,
+  Field,
+  InputType,
+  Mutation,
+  Publisher,
+  PubSub,
+  PubSubEngine,
+  Query,
+  Resolver,
+  Root,
+  Subscription,
+} from "type-graphql";
 import { Product } from "../../database/db";
 import { ProductType } from "../schema";
 
@@ -21,6 +35,9 @@ export class ProductInput {
   owner?: String;
 }
 
+@ArgsType()
+class ProductArgs extends ProductType {}
+
 @Resolver((of) => ProductType)
 export default class ProductResolver {
   // @Authorized()
@@ -37,7 +54,9 @@ export default class ProductResolver {
     description: "Adds a product to the database",
   })
   async addProduct(
-    @Arg("product") product: ProductInput
+    @Arg("product") product: ProductInput,
+    @PubSub() pubSub: PubSubEngine,
+    @PubSub("PRODUCT") publish: Publisher<ProductType>
   ): Promise<ProductType> {
     TODO: "Why use any here?";
     let newProduct: ProductType | any = new Product({
@@ -49,6 +68,9 @@ export default class ProductResolver {
       owner: product.owner,
     });
     await newProduct.save();
+
+    // await pubSub.publish("PRODUCT", newProduct);
+    await publish(newProduct);
     return newProduct;
   }
 
@@ -65,5 +87,16 @@ export default class ProductResolver {
     product.awardee = username;
     await product.save();
     return product;
+  }
+
+  @Subscription({
+    topics: "PRODUCT",
+  })
+  productAdded(
+    @Root() productPayload: ProductType,
+    @Args() args: ProductArgs
+  ): ProductType {
+    //@ts-ignore
+    return { ...productPayload._doc };
   }
 }

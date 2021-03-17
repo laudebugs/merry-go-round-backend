@@ -19,7 +19,4 @@ export default class ProductType {
 
   @Field()
   photo: String;
-
-  @Field()
-  owner: String;
 }

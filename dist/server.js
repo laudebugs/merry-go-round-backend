@@ -52,10 +52,10 @@ require("./database/db");
         apolloServer.applyMiddleware({ app });
         const httpServer = http_1.createServer(app);
         apolloServer.installSubscriptionHandlers(httpServer);
-        const PORT = process.env.PORT || 7000;
+        const PORT = 7000;
         httpServer.listen(PORT, () => {
             console.log(`api is running on port ${PORT}`);
         });
     });
 })();
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=server.js.map
