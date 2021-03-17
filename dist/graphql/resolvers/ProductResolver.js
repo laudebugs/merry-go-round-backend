@@ -81,7 +81,7 @@ let ProductResolver = class ProductResolver {
                 owner: product.owner,
             });
             yield newProduct.save();
-            yield pubSub.publish("PRODUCT", newProduct);
+            // await pubSub.publish("PRODUCT", newProduct);
             yield publish(newProduct);
             return newProduct;
         });
@@ -95,9 +95,8 @@ let ProductResolver = class ProductResolver {
         });
     }
     productAdded(productPayload, args) {
-        console.log(productPayload);
-        console.log(args);
-        return Object.assign({}, productPayload);
+        //@ts-ignore
+        return Object.assign({}, productPayload._doc);
     }
 };
 __decorate([

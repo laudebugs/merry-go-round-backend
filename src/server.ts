@@ -1,5 +1,6 @@
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
+import { createServer } from "http";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { verifyToken } from "./database/authentication";
@@ -26,21 +27,28 @@ require("./database/db");
 
   const app = express();
 
-  const server = new ApolloServer({
+  const apolloServer = new ApolloServer({
     schema,
     context: ({ req }) => {
-      // console.log(req.headers.authorization);
-      const token = req.headers.authorization || "";
-      const user = verifyToken(token);
-      return user;
+      //@ts-ignore
+      if (!!req) {
+        // console.log(req.headers.authorization);
+        const token = req.headers.authorization || "";
+        const user = verifyToken(token);
+        return user;
+      }
+      return null;
     },
     subscriptions: "/subs",
   });
 
-  server.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app });
+
+  const httpServer = createServer(app);
+  apolloServer.installSubscriptionHandlers(httpServer);
 
   const PORT = 7000;
-  app.listen(PORT, () => {
+  httpServer.listen(PORT, () => {
     console.log(`api is running on port ${PORT}`);
   });
 })();

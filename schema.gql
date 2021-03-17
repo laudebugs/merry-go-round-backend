@@ -65,7 +65,6 @@ type ProductType {
   bids: [String!]!
   description: String!
   name: String!
-  owner: String!
   photo: String!
 }
 

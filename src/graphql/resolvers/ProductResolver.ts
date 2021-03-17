@@ -69,7 +69,7 @@ export default class ProductResolver {
     });
     await newProduct.save();
 
-    await pubSub.publish("PRODUCT", newProduct);
+    // await pubSub.publish("PRODUCT", newProduct);
     await publish(newProduct);
     return newProduct;
   }
@@ -96,8 +96,7 @@ export default class ProductResolver {
     @Root() productPayload: ProductType,
     @Args() args: ProductArgs
   ): ProductType {
-    console.log(productPayload);
-    console.log(args);
-    return { ...productPayload };
+    //@ts-ignore
+    return { ...productPayload._doc };
   }
 }

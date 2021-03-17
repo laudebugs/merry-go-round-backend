@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const apollo_server_express_1 = require("apollo-server-express");
 const express_1 = __importDefault(require("express"));
+const http_1 = require("http");
 require("reflect-metadata");
 const type_graphql_1 = require("type-graphql");
 const authentication_1 = require("./database/authentication");
@@ -34,19 +35,25 @@ require("./database/db");
             authMode: "null",
         });
         const app = express_1.default();
-        const server = new apollo_server_express_1.ApolloServer({
+        const apolloServer = new apollo_server_express_1.ApolloServer({
             schema,
             context: ({ req }) => {
-                // console.log(req.headers.authorization);
-                const token = req.headers.authorization || "";
-                const user = authentication_1.verifyToken(token);
-                return user;
+                //@ts-ignore
+                if (!!req) {
+                    // console.log(req.headers.authorization);
+                    const token = req.headers.authorization || "";
+                    const user = authentication_1.verifyToken(token);
+                    return user;
+                }
+                return null;
             },
             subscriptions: "/subs",
         });
-        server.applyMiddleware({ app });
+        apolloServer.applyMiddleware({ app });
+        const httpServer = http_1.createServer(app);
+        apolloServer.installSubscriptionHandlers(httpServer);
         const PORT = 7000;
-        app.listen(PORT, () => {
+        httpServer.listen(PORT, () => {
             console.log(`api is running on port ${PORT}`);
         });
     });
