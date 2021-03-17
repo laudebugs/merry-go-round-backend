@@ -1,5 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
-import { UserType } from "./";
+import { UserType } from ".";
 @ObjectType()
 export default class ProductType {
   @Field()

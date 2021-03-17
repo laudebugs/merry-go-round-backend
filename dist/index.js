@@ -47,7 +47,7 @@ require("./database/db");
         app.get("*", (req, res) => {
             res.json({ messsage: "welcome to lau de bugs's api" });
         });
-        const PORT = 7000;
+        const PORT = process.env.PORT || 7000;
         app.listen(PORT, () => {
             console.log(`api is running on port ${PORT}`);
         });

@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const type_graphql_1 = require("type-graphql");
-const _1 = require("./");
+const _1 = require(".");
 let ProductType = class ProductType {
 };
 __decorate([

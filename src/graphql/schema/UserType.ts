@@ -1,5 +1,5 @@
 import { Authorized, Field, ObjectType } from "type-graphql";
-import { Role } from "./";
+import { Role } from ".";
 
 @ObjectType()
 export default class UserType {
