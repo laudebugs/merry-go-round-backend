@@ -18,7 +18,8 @@ const email_validator_1 = __importDefault(require("email-validator"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const Schema = mongoose_1.default.Schema;
 const SALT_ROUNDS = 16;
-mongoose_1.default.connect(process.env.MONGO_DB, {
+const config = process.env.MONGO_DB || require("dotenv").config("../../").parsed.MONGO_DB;
+mongoose_1.default.connect(config, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,

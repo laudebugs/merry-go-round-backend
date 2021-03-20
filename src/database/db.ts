@@ -4,8 +4,10 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const SALT_ROUNDS = 16;
+const config =
+  process.env.MONGO_DB || require("dotenv").config("../../").parsed.MONGO_DB;
 
-mongoose.connect(process.env.MONGO_DB, {
+mongoose.connect(config, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
