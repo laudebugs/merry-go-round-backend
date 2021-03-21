@@ -29,6 +29,11 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const type_graphql_1 = require("type-graphql");
 const db_1 = require("../../database/db");
 const schema_1 = require("../schema");
+let BidArgs = class BidArgs extends schema_1.BidType {
+};
+BidArgs = __decorate([
+    type_graphql_1.ArgsType()
+], BidArgs);
 let BidInput = class BidInput {
 };
 __decorate([
@@ -83,7 +88,7 @@ let BidResolver = class BidResolver {
             return bids;
         });
     }
-    makeBid(bid) {
+    makeBid(bid, publish) {
         return __awaiter(this, void 0, void 0, function* () {
             let newBid = new db_1.Bid({
                 productId: bid.productId,
@@ -98,6 +103,9 @@ let BidResolver = class BidResolver {
             yield newBid.save();
             yield user.save();
             newBid.submitted = newBid.tickets;
+            // publish the bid
+            yield publish(newBid);
+            // return the bid
             return newBid;
         });
     }
@@ -126,6 +134,12 @@ let BidResolver = class BidResolver {
             db_1.Bid.remove(thisBid);
             return thisUser;
         });
+    }
+    bidAdded(bidPayload, args) {
+        // console.log(bidPayload);
+        // @ts-ignore
+        const bid = bidPayload._doc;
+        return [bid];
     }
 };
 __decorate([
@@ -157,8 +171,9 @@ __decorate([
     type_graphql_1.Authorized(),
     type_graphql_1.Mutation((returns) => schema_1.BidType, { description: "Makes a bid for a user" }),
     __param(0, type_graphql_1.Arg("bid")),
+    __param(1, type_graphql_1.PubSub("BID_ADDED")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [BidInput]),
+    __metadata("design:paramtypes", [BidInput, Function]),
     __metadata("design:returntype", Promise)
 ], BidResolver.prototype, "makeBid", null);
 __decorate([
@@ -181,6 +196,16 @@ __decorate([
     __metadata("design:paramtypes", [BidInput]),
     __metadata("design:returntype", Promise)
 ], BidResolver.prototype, "deleteBid", null);
+__decorate([
+    type_graphql_1.Subscription((returns) => [schema_1.BidType], {
+        topics: ["BID_ADDED"],
+        nullable: true,
+    }),
+    __param(0, type_graphql_1.Root()), __param(1, type_graphql_1.Args()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [schema_1.BidType, BidArgs]),
+    __metadata("design:returntype", Array)
+], BidResolver.prototype, "bidAdded", null);
 BidResolver = __decorate([
     type_graphql_1.Resolver((of) => schema_1.BidType)
 ], BidResolver);

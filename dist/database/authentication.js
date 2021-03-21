@@ -30,17 +30,20 @@ const authenticateUser = (username, password) => __awaiter(void 0, void 0, void 
         const user = yield db_1.User.findOne({
             username: username,
         }).exec();
+        console.log(user);
         if (!user) {
             return null;
         }
         const passwordOK = yield user.comparePassword(password);
         if (!passwordOK) {
+            console.log("wrong pass");
             return null;
         }
         const token = exports.generateToken(username, user.roles);
         return token;
     }
     catch (error) {
+        console.log(error.message);
         return Error_1.Error["INCORRECT_PASSWORD"];
     }
 });

@@ -70,10 +70,13 @@ type ProductType {
   bids: [String!]!
   description: String!
   name: String!
+  owner: String!
   photo: String!
 }
 
 type Query {
+  getAllBids: [BidType!]!
+
   """Returns all bids"""
   getBids: [BidType!]!
 
@@ -100,6 +103,7 @@ enum Role {
 }
 
 type Subscription {
+  bidAdded: [BidType!]
   productAdded: ProductType!
 }
 

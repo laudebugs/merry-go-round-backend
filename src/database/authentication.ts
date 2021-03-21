@@ -22,6 +22,7 @@ export const authenticateUser = async (
     const user: typeof User | any = await User.findOne({
       username: username,
     }).exec();
+    console.log(user);
 
     if (!user) {
       return null;
@@ -29,6 +30,7 @@ export const authenticateUser = async (
 
     const passwordOK = await user.comparePassword(password);
     if (!passwordOK) {
+      console.log("wrong pass");
       return null;
     }
 
@@ -36,6 +38,7 @@ export const authenticateUser = async (
 
     return token;
   } catch (error) {
+    console.log(error.message);
     return Error["INCORRECT_PASSWORD"];
   }
 };
