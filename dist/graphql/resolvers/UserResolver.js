@@ -92,7 +92,9 @@ let UserResolver = class UserResolver {
      */
     signin(credentials) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(credentials);
             let token = yield authentication_1.authenticateUser(credentials.username, credentials.password);
+            console.log(token);
             return token;
         });
     }

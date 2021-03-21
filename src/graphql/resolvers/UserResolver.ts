@@ -75,10 +75,12 @@ export default class UserResolver {
   })
   //@ts-ignore
   async signin(@Arg("credentials") credentials: Credentials) {
+    console.log(credentials);
     let token: string | Error = await authenticateUser(
       credentials.username,
       credentials.password
     );
+    console.log(token);
     return token;
   }
 

@@ -1,15 +1,24 @@
 import mongoose from "mongoose";
 import {
   Arg,
+  Args,
   Authorized,
   Field,
   InputType,
   Mutation,
   Query,
   Resolver,
+  Root,
+  Subscription,
+  ArgsType,
+  PubSub,
+  Publisher,
 } from "type-graphql";
 import { Bid, Product, User } from "../../database/db";
 import { BidType, ProductType, UserType } from "../schema";
+
+@ArgsType()
+class BidArgs extends BidType {}
 
 @InputType({ description: "A Bid Input" })
 export class BidInput {
@@ -72,7 +81,10 @@ export default class BidResolver {
   }
   @Authorized()
   @Mutation((returns) => BidType, { description: "Makes a bid for a user" })
-  async makeBid(@Arg("bid") bid: BidInput): Promise<BidType> {
+  async makeBid(
+    @Arg("bid") bid: BidInput,
+    @PubSub("BID_ADDED") publish: Publisher<BidType>
+  ): Promise<BidType> {
     let newBid: BidType | any = new Bid({
       productId: bid.productId,
       tickets: bid.tickets,
@@ -91,6 +103,11 @@ export default class BidResolver {
     await newBid.save();
     await user.save();
     newBid.submitted = newBid.tickets;
+
+    // publish the bid
+    await publish(newBid);
+
+    // return the bid
     return newBid;
   }
 
@@ -131,5 +148,16 @@ export default class BidResolver {
     // remove the bid - and all references to the bid
     Bid.remove(thisBid);
     return thisUser;
+  }
+
+  @Subscription((returns) => [BidType], {
+    topics: ["BID_ADDED"],
+    nullable: true,
+  })
+  bidAdded(@Root() bidPayload: BidType, @Args() args: BidArgs): [BidType] {
+    // console.log(bidPayload);
+    // @ts-ignore
+    const bid = bidPayload._doc;
+    return [bid];
   }
 }

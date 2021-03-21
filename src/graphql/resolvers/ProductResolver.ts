@@ -14,8 +14,8 @@ import {
   Root,
   Subscription,
 } from "type-graphql";
-import { Product } from "../../database/db";
-import { ProductType } from "../schema";
+import { Bid, Product } from "../../database/db";
+import { BidType, ProductType } from "../schema";
 
 @InputType({ description: "A Product Input" })
 export class ProductInput {
@@ -89,6 +89,13 @@ export default class ProductResolver {
     return product;
   }
 
+  @Query((returns) => [BidType])
+  async getAllBids() {
+    const allBids = await Bid.find();
+
+    return allBids;
+  }
+
   @Subscription({
     topics: "PRODUCT",
   })
@@ -96,6 +103,8 @@ export default class ProductResolver {
     @Root() productPayload: ProductType,
     @Args() args: ProductArgs
   ): ProductType {
+    console.log(productPayload);
+
     //@ts-ignore
     return { ...productPayload._doc };
   }

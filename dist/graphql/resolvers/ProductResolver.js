@@ -94,7 +94,14 @@ let ProductResolver = class ProductResolver {
             return product;
         });
     }
+    getAllBids() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const allBids = yield db_1.Bid.find();
+            return allBids;
+        });
+    }
     productAdded(productPayload, args) {
+        console.log(productPayload);
         //@ts-ignore
         return Object.assign({}, productPayload._doc);
     }
@@ -129,6 +136,12 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "award", null);
+__decorate([
+    type_graphql_1.Query((returns) => [schema_1.BidType]),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ProductResolver.prototype, "getAllBids", null);
 __decorate([
     type_graphql_1.Subscription({
         topics: "PRODUCT",
