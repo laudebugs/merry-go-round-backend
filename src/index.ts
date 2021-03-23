@@ -49,6 +49,7 @@ require("./database/db");
   const httpServer = createServer(app);
   apolloServer.installSubscriptionHandlers(httpServer);
 
+  app.get("*", (req, res) => res.json({ message: "helloooo" }));
   const PORT = process.env.PORT || 7000;
   httpServer.listen(PORT, () => {
     console.log(`api is running on port ${PORT}`);
