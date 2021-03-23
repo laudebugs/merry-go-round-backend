@@ -219,6 +219,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "resetPassword", null);
 __decorate([
+    type_graphql_1.Authorized("ADMIN"),
     type_graphql_1.Query((returns) => [schema_1.UserType]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),

@@ -162,11 +162,13 @@ export default class UserResolver {
     // Set the new password
   }
 
+  @Authorized("ADMIN")
   @Query((returns) => [UserType])
   async getAllUsers(): Promise<UserType[]> {
     let users: UserType | any = await User.find();
     return users;
   }
+
   @Authorized("ADMIN")
   @Subscription((returns) => [UserType], {
     topics: ["NEW_USER"],
