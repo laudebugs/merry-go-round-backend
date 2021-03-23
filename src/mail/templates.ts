@@ -1,4 +1,44 @@
+import path from "path";
 import emailClient from "./emailClient";
+const hbs = require("nodemailer-express-handlebars");
+
+emailClient.use(
+  "compile",
+  hbs({
+    viewEngine: {
+      extName: ".handlebars",
+      partialsDir: path.resolve(__dirname, "views"),
+      defaultLayout: false,
+    },
+    viewPath: path.resolve(__dirname, "views"),
+    extName: ".hbs",
+  })
+);
+
+export async function sendMessage(
+  recipient: String,
+  subject: String,
+  body: String
+) {
+  try {
+    let info = await emailClient.sendMail({
+      from: '"Laurence (RUF Coffee House Support)" lbi213@nyu.edu', // sender address
+      to: recipient,
+      subject: subject,
+      template: "email",
+      context: {
+        message_title: subject,
+        message_content: body,
+        message_data: "HoneyDew Technologies LLC",
+      },
+    });
+
+    return info.messageId;
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+}
 
 export async function sendResetEmail(
   recipient: String,

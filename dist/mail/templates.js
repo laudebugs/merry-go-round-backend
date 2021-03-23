@@ -12,8 +12,42 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendWelcomeEmail = exports.sendResetEmail = void 0;
+exports.sendWelcomeEmail = exports.sendResetEmail = exports.sendMessage = void 0;
+const path_1 = __importDefault(require("path"));
 const emailClient_1 = __importDefault(require("./emailClient"));
+const hbs = require("nodemailer-express-handlebars");
+emailClient_1.default.use("compile", hbs({
+    viewEngine: {
+        extName: ".handlebars",
+        partialsDir: path_1.default.resolve(__dirname, "views"),
+        defaultLayout: false,
+    },
+    viewPath: path_1.default.resolve(__dirname, "views"),
+    extName: ".hbs",
+}));
+function sendMessage(recipient, subject, body) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let info = yield emailClient_1.default.sendMail({
+                from: '"Laurence (RUF Coffee House Support)" lbi213@nyu.edu',
+                to: recipient,
+                subject: subject,
+                template: "email",
+                context: {
+                    message_title: subject,
+                    message_content: body,
+                    message_data: "HoneyDew Technologies LLC",
+                },
+            });
+            return info.messageId;
+        }
+        catch (error) {
+            console.log(error.message);
+            return null;
+        }
+    });
+}
+exports.sendMessage = sendMessage;
 function sendResetEmail(recipient, username, password) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
