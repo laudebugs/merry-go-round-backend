@@ -1,6 +1,8 @@
 const nodemailer = require("nodemailer");
 
-let conf = require("dotenv").config("../../").parsed.SENDGRID_KEY;
+let conf =
+  process.env.SENDGRID_KEY ||
+  require("dotenv").config("../../").parsed.SENDGRID_KEY;
 
 const emailClient = nodemailer.createTransport({
   host: "smtp.sendgrid.net",
@@ -8,7 +10,7 @@ const emailClient = nodemailer.createTransport({
   secure: false, // true for 465, false for other ports
   auth: {
     user: "apikey",
-    pass: process.env.SENDGRID_KEY || conf,
+    pass: conf,
   },
 });
 
