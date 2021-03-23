@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendWelcomeEmail = exports.sendResetEmail = exports.sendMessage = void 0;
+exports.sendResetEmail = exports.sendWelcomeEmail = void 0;
 const path_1 = __importDefault(require("path"));
 const emailClient_1 = __importDefault(require("./emailClient"));
 const hbs = require("nodemailer-express-handlebars");
@@ -25,29 +25,29 @@ emailClient_1.default.use("compile", hbs({
     viewPath: path_1.default.resolve(__dirname, "views"),
     extName: ".hbs",
 }));
-function sendMessage(recipient, subject, body) {
+function sendWelcomeEmail(recipient, username, password) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let info = yield emailClient_1.default.sendMail({
                 from: '"Laurence (RUF Coffee House Support)" lbi213@nyu.edu',
                 to: recipient,
-                subject: subject,
+                subject: "RUF Coffee House Pandemic Edition Raffle",
                 template: "email",
                 context: {
-                    message_title: subject,
-                    message_content: body,
-                    message_data: "HoneyDew Technologies LLC",
+                    username: username,
+                    recipient: recipient,
+                    password: password,
                 },
             });
+            console.log(info.messageId);
             return info.messageId;
         }
         catch (error) {
             console.log(error.message);
-            return null;
         }
     });
 }
-exports.sendMessage = sendMessage;
+exports.sendWelcomeEmail = sendWelcomeEmail;
 function sendResetEmail(recipient, username, password) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -74,34 +74,4 @@ function sendResetEmail(recipient, username, password) {
     });
 }
 exports.sendResetEmail = sendResetEmail;
-function sendWelcomeEmail(recipient, username, password) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            let info = yield emailClient_1.default.sendMail({
-                from: '"Laurence (RUF Coffee House Support)" lbi213@nyu.edu',
-                to: recipient,
-                subject: "Welcome to RUF Coffee House (Pandemic Edition)",
-                text: `Here are your new credentials: 
-                    username: ${username}
-                    email: ${recipient}
-                    password: ${password}
-            `,
-                html: `<div>
-              <p> Here are your new credentials in case you get logged out. Log in with your email and password</p>
-               <p> username: ${username} </p>
-                <p>email: ${recipient}</p>
-                <p>password: ${password}</p>
-
-                <p> Sign in <a href="https://rufcofeehouse.web.app/" target="__blank">here</a>.
-              </div>
-          `,
-            });
-            console.log("Message sent: %s", info.messageId);
-        }
-        catch (error) {
-            console.log(error.message);
-        }
-    });
-}
-exports.sendWelcomeEmail = sendWelcomeEmail;
 //# sourceMappingURL=templates.js.map
