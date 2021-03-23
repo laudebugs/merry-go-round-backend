@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.getAuthenticatedUser = exports.verifyToken = exports.generateToken = exports.authenticateUser = void 0;
+exports.genPassword = exports.resetPassword = exports.getAuthenticatedUser = exports.verifyToken = exports.generateToken = exports.authenticateUser = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const Error_1 = require("../graphql/schema/Error");
 const db_1 = require("./db");
@@ -20,17 +20,16 @@ const passes_1 = require("./passes");
 // let conf = require("dotenv").config("../../").parsed;
 /**
  * A function to authenticate a user
- * @param username
+ * @param email
  * @param password
- * @returns null if a user can't be authenticated, the username and token if otherwise
+ * @returns null if a user can't be authenticated, the email and token if otherwise
  */
-const authenticateUser = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
+const authenticateUser = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Verify the Use
         const user = yield db_1.User.findOne({
-            username: username,
+            email: email,
         }).exec();
-        console.log(user);
         if (!user) {
             return null;
         }
@@ -39,7 +38,7 @@ const authenticateUser = (username, password) => __awaiter(void 0, void 0, void 
             console.log("wrong pass");
             return null;
         }
-        const token = exports.generateToken(username, user.roles);
+        const token = exports.generateToken(user.username, email, user.roles);
         return token;
     }
     catch (error) {
@@ -50,12 +49,13 @@ const authenticateUser = (username, password) => __awaiter(void 0, void 0, void 
 exports.authenticateUser = authenticateUser;
 /**
  * Generates a JWT Token
- * @param username
+ * @param email
  * @param password
  */
-const generateToken = (username, roles) => {
+const generateToken = (username, email, roles) => {
     const token = jsonwebtoken_1.default.sign({
         username: username,
+        email: email,
         roles: roles,
         iat: Math.floor(Date.now()),
     }, process.env.JWT_SECRET, { expiresIn: "24h" });
@@ -83,7 +83,7 @@ exports.verifyToken = verifyToken;
 const getAuthenticatedUser = (token) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        let user = yield db_1.User.find({ username: decoded.username });
+        let user = yield db_1.User.find({ email: decoded.email });
         return user;
     }
     catch (error) {
@@ -99,7 +99,7 @@ const resetPassword = (email) => __awaiter(void 0, void 0, void 0, function* () 
         let randomPass = passes_1.psalms.phrases[random];
         user.password = randomPass;
         yield user.save();
-        return [user.username, randomPass];
+        return [user.email, randomPass];
     }
     catch (error) {
         console.log(error);
@@ -107,4 +107,10 @@ const resetPassword = (email) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.resetPassword = resetPassword;
+const genPassword = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    let random = Math.floor(Math.random() * passes_1.psalms.phrases.length);
+    let randomPass = passes_1.psalms.phrases[random];
+    return randomPass;
+});
+exports.genPassword = genPassword;
 //# sourceMappingURL=authentication.js.map

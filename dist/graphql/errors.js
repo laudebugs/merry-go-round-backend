@@ -9,35 +9,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ServerError = void 0;
 const type_graphql_1 = require("type-graphql");
-let BidType = class BidType {
+let ServerError = class ServerError extends Error {
+    constructor(errorCode, errorMessage) {
+        super(errorMessage);
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
 };
 __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
-], BidType.prototype, "_id", void 0);
+], ServerError.prototype, "errorCode", void 0);
 __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
-], BidType.prototype, "productId", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", Number)
-], BidType.prototype, "tickets", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", String)
-], BidType.prototype, "user", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", Boolean)
-], BidType.prototype, "submitted", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", Number)
-], BidType.prototype, "prev_value", void 0);
-BidType = __decorate([
-    type_graphql_1.ObjectType()
-], BidType);
-exports.default = BidType;
-//# sourceMappingURL=BidType.js.map
+], ServerError.prototype, "errorMessage", void 0);
+ServerError = __decorate([
+    type_graphql_1.ObjectType(),
+    __metadata("design:paramtypes", [String, String])
+], ServerError);
+exports.ServerError = ServerError;
+//# sourceMappingURL=errors.js.map

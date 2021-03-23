@@ -32,11 +32,12 @@ require("./database/db");
     context: ({ req }) => {
       //@ts-ignore
       if (!!req) {
-        // console.log(req.headers.authorization);
         const token = req.headers.authorization || "";
         const user = verifyToken(token);
+        console.log(user);
         return user;
       }
+      console.log("nulling");
       return null;
     },
     subscriptions: "/subs",

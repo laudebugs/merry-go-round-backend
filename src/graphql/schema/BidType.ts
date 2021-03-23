@@ -15,4 +15,7 @@ export default class BidType {
 
   @Field()
   submitted: Boolean;
+
+  @Field()
+  prev_value: Number;
 }

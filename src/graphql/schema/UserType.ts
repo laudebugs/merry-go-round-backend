@@ -18,11 +18,14 @@ export default class UserType {
   @Field()
   tickets: Number;
 
+  @Field()
+  totalTickets: Number;
+
   @Field((type) => Number)
   award: Number;
 
   @Field()
-  avatar?: Number;
+  avatar: Number;
 
   @Authorized(["SUPER"])
   @Field((type) => Role, { nullable: true })
