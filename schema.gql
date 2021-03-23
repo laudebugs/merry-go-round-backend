@@ -31,6 +31,7 @@ input Credentials {
 type Mutation {
   """Adds a product to the database"""
   addProduct(product: ProductInput!): ProductType!
+  addTickets(tickets: Float!, username: String!): UserType!
 
   """Awards a product to a certain user"""
   award(productId: String, username: String): ProductType!

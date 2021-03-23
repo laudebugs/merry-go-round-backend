@@ -103,7 +103,6 @@ let BidResolver = class BidResolver {
             //     "low_balance",
             //     "Ticket balance less than you need to make this bid."
             //   );
-            console.log(bid);
             if (bid._id == "-1") {
                 currBid = new db_1.Bid({
                     productId: bid.productId,

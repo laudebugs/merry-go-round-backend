@@ -82,7 +82,6 @@ let UserResolver = class UserResolver {
     getUser(email) {
         return __awaiter(this, void 0, void 0, function* () {
             let user = yield db_1.User.findOne({ email: email });
-            console.log(user);
             return user;
         });
     }
@@ -128,6 +127,15 @@ let UserResolver = class UserResolver {
     signout(jwt) {
         // Deauthorize the JWT
         return "";
+    }
+    addTickets(username, tickets) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let user = yield db_1.User.findOne({ username: username });
+            user.totalTickets += tickets;
+            user.tickets += tickets;
+            yield user.save();
+            return user;
+        });
     }
     resetPassword(email) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -191,6 +199,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UserResolver.prototype, "signout", null);
+__decorate([
+    type_graphql_1.Authorized(["ADMIN"]),
+    type_graphql_1.Mutation((returns) => schema_1.UserType),
+    __param(0, type_graphql_1.Arg("username")),
+    __param(1, type_graphql_1.Arg("tickets")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "addTickets", null);
 __decorate([
     type_graphql_1.Mutation((returns) => Boolean, {
         nullable: true,

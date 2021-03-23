@@ -29,16 +29,17 @@ require("./database/db");
 
   const apolloServer = new ApolloServer({
     schema,
-    context: ({ req }) => {
+    context: ({ req, connection }) => {
       //@ts-ignore
-      if (!!req) {
-        const token = req.headers.authorization || "";
-        const user = verifyToken(token);
-        console.log(user);
-        return user;
+      let token;
+      if (connection) {
+        token = connection.context.authorization || "";
+      } else {
+        token = req.headers.authorization || "";
       }
-      console.log("nulling");
-      return null;
+      const user = verifyToken(token);
+
+      return user;
     },
     subscriptions: "/subs",
   });

@@ -68,7 +68,6 @@ export default class UserResolver {
   //@ts-ignore
   async getUser(@Arg("email") email: String): UserType {
     let user: UserType | any = await User.findOne({ email: email });
-    console.log(user);
     return user;
   }
   /**
@@ -131,6 +130,20 @@ export default class UserResolver {
   signout(jwt: String) {
     // Deauthorize the JWT
     return "";
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation((returns) => UserType)
+  async addTickets(
+    @Arg("username") username: string,
+    @Arg("tickets") tickets: number
+  ) {
+    let user: UserType | any = await User.findOne({ username: username });
+    user.totalTickets += tickets;
+    user.tickets += tickets;
+    await user.save();
+
+    return user;
   }
 
   @Mutation((returns) => Boolean, {

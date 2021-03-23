@@ -37,16 +37,17 @@ require("./database/db");
         const app = express_1.default();
         const apolloServer = new apollo_server_express_1.ApolloServer({
             schema,
-            context: ({ req }) => {
+            context: ({ req, connection }) => {
                 //@ts-ignore
-                if (!!req) {
-                    const token = req.headers.authorization || "";
-                    const user = authentication_1.verifyToken(token);
-                    console.log(user);
-                    return user;
+                let token;
+                if (connection) {
+                    token = connection.context.authorization || "";
                 }
-                console.log("nulling");
-                return null;
+                else {
+                    token = req.headers.authorization || "";
+                }
+                const user = authentication_1.verifyToken(token);
+                return user;
             },
             subscriptions: "/subs",
         });

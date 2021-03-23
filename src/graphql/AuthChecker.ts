@@ -18,12 +18,12 @@ export const AuthCheckerFn: AuthChecker = (
   }
   // For Super Users - they can access everything
   //@ts-ignore
-  if (context.roles.includes("0")) {
+  if (context.roles.includes("SUPER")) {
     return true;
   }
   // For Moderators \
   //@ts-ignore
-  if (roles.includes("ADMIN") && context.roles.includes("1")) {
+  if (roles.includes("ADMIN") && context.roles.includes("ADMIN")) {
     return true;
   }
 
