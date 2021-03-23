@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import mongoose from "mongoose";
 import {
   Arg,
@@ -15,6 +16,7 @@ import {
   Publisher,
 } from "type-graphql";
 import { Bid, Product, User } from "../../database/db";
+import { ServerError } from "../errors";
 import { BidType, ProductType, UserType } from "../schema";
 
 @ArgsType()
@@ -36,6 +38,9 @@ export class BidInput {
 
   @Field()
   submitted: number;
+
+  @Field()
+  prev_value: number;
 }
 
 @Resolver((of) => BidType)
@@ -52,8 +57,8 @@ export default class BidResolver {
   @Query((returns) => [BidType], {
     description: "Get a particular user's bids",
   })
-  async getUserBids(username: string): Promise<BidType[]> {
-    let user: UserType | any = await User.find({ username: username });
+  async getUserBids(@Arg("username") username: string): Promise<BidType[]> {
+    let user: UserType | any = await User.findOne({ username: username });
     let bids = Promise.all<BidType>(
       user.bids.map(async (bidId) => {
         let bid = await Bid.findById(mongoose.Types.ObjectId(bidId));
@@ -67,7 +72,9 @@ export default class BidResolver {
   @Query((returns) => [BidType], {
     description: "Returns all the bids of a certain product",
   })
-  async getProductBids(productId: string): Promise<BidType[]> {
+  async getProductBids(
+    @Arg("productId") productId: string
+  ): Promise<BidType[]> {
     let product: ProductType | any = await Product.findById(
       mongoose.Types.ObjectId(productId)
     );
@@ -80,35 +87,55 @@ export default class BidResolver {
     return bids;
   }
   @Authorized()
-  @Mutation((returns) => BidType, { description: "Makes a bid for a user" })
+  @Mutation((returns) => BidType, {
+    description: "Makes a bid for a user",
+    nullable: true,
+  })
   async makeBid(
     @Arg("bid") bid: BidInput,
     @PubSub("BID_ADDED") publish: Publisher<BidType>
-  ): Promise<BidType> {
-    let newBid: BidType | any = new Bid({
-      productId: bid.productId,
-      tickets: bid.tickets,
-      user: bid.user,
-    });
-
+  ): Promise<BidType | null> {
+    let currBid;
     let product: typeof Product | any = await Product.findById(
       mongoose.Types.ObjectId(bid.productId)
     );
-
-    product.bids.push(newBid._id);
-
     let user: typeof User | any = await User.findOne({ username: bid.user });
-    user.tickets = 5;
-    await product.save();
-    await newBid.save();
+    if (user.tickets - (bid.prev_value - bid.tickets) < 0) return null;
+    // new ServerError(
+    //     "low_balance",
+    //     "Ticket balance less than you need to make this bid."
+    //   );
+    console.log(bid);
+
+    if (bid._id == "-1") {
+      currBid = new Bid({
+        productId: bid.productId,
+        tickets: bid.tickets,
+        user: bid.user,
+        prev_value: 0,
+        submitted: bid.tickets,
+      });
+      product.bids.push(currBid._id);
+      user.bids.push(currBid._id);
+
+      await product.save();
+    } else {
+      currBid = await Bid.findById(mongoose.Types.ObjectId(bid._id));
+    }
+    TODO: "Ensure the user doesn't bid more than the tickets they have";
+    user.tickets += bid.submitted - bid.tickets;
     await user.save();
-    newBid.submitted = newBid.tickets;
+
+    currBid.prev_value = currBid.tickets;
+    currBid.submitted = currBid.tickets;
+    currBid.tickets = bid.tickets;
+    await currBid.save();
 
     // publish the bid
-    await publish(newBid);
+    await publish(currBid);
 
     // return the bid
-    return newBid;
+    return currBid;
   }
 
   @Authorized()

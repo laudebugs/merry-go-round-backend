@@ -25,8 +25,13 @@ exports.Credentials = exports.UserInput = void 0;
 const type_graphql_1 = require("type-graphql");
 const authentication_1 = require("../../database/authentication");
 const db_1 = require("../../database/db");
-const passwordReset_1 = require("../../mail/passwordReset");
+const templates_1 = require("../../mail/templates");
 const schema_1 = require("../schema");
+let UserArgs = class UserArgs extends schema_1.UserType {
+};
+UserArgs = __decorate([
+    type_graphql_1.ArgsType()
+], UserArgs);
 let UserInput = class UserInput {
 };
 __decorate([
@@ -41,10 +46,6 @@ __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
 ], UserInput.prototype, "email", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", String)
-], UserInput.prototype, "password", void 0);
 __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", Number)
@@ -63,7 +64,7 @@ let Credentials = class Credentials {
 __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
-], Credentials.prototype, "username", void 0);
+], Credentials.prototype, "email", void 0);
 __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
@@ -78,9 +79,10 @@ let UserResolver = class UserResolver {
      * @param username
      * @returns
      */
-    getUser(username) {
+    getUser(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            let user = yield db_1.User.findOne({ username: username });
+            let user = yield db_1.User.findOne({ email: email });
+            console.log(user);
             return user;
         });
     }
@@ -92,9 +94,7 @@ let UserResolver = class UserResolver {
      */
     signin(credentials) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(credentials);
-            let token = yield authentication_1.authenticateUser(credentials.username, credentials.password);
-            console.log(token);
+            let token = yield authentication_1.authenticateUser(credentials.email, credentials.password);
             return token;
         });
     }
@@ -102,20 +102,25 @@ let UserResolver = class UserResolver {
      *
      * @param user
      */
-    signup(user) {
+    signup(user, publish) {
         return __awaiter(this, void 0, void 0, function* () {
             //TODO: "Sign up and send JWT"
+            const password = yield authentication_1.genPassword(user.email);
             let newUser = new db_1.User({
                 username: user.username,
-                password: user.password,
                 email: user.email,
+                password: password,
                 tickets: 5,
                 roles: [],
                 avatar: user.avatar,
+                totalTickets: 5,
             });
+            // Send the welcome email
+            yield templates_1.sendWelcomeEmail(user.email, user.username, password);
             // returns a JWT that can then be used to verify a user
             yield newUser.save();
-            let token = authentication_1.generateToken(user.username, user.roles);
+            yield publish(newUser);
+            let token = authentication_1.generateToken(user.username, user.email, []);
             return token;
         });
     }
@@ -131,10 +136,21 @@ let UserResolver = class UserResolver {
             if (!username) {
                 return null;
             }
-            yield passwordReset_1.sendResetEmail(email, username, password);
+            yield templates_1.sendResetEmail(email, username, password);
             return true;
             // Set the new password
         });
+    }
+    getAllUsers() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let users = yield db_1.User.find();
+            return users;
+        });
+    }
+    newUser(userPayload, args) {
+        // @ts-ignore
+        const user = userPayload._doc;
+        return user;
     }
 };
 __decorate([
@@ -142,7 +158,7 @@ __decorate([
         nullable: true,
         description: "Returns a user based on a user's username",
     }),
-    __param(0, type_graphql_1.Arg("username")),
+    __param(0, type_graphql_1.Arg("email")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", schema_1.UserType)
@@ -158,11 +174,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "signin", null);
 __decorate([
-    type_graphql_1.Mutation({ description: "Signs up a user" }),
+    type_graphql_1.Mutation((returns) => String, { description: "Signs up a user" }),
     __param(0, type_graphql_1.Arg("user")),
+    __param(1, type_graphql_1.PubSub("NEW_USER")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [UserInput]),
-    __metadata("design:returntype", String)
+    __metadata("design:paramtypes", [UserInput, Function]),
+    __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "signup", null);
 __decorate([
     type_graphql_1.Authorized(),
@@ -184,6 +201,23 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "resetPassword", null);
+__decorate([
+    type_graphql_1.Query((returns) => [schema_1.UserType]),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "getAllUsers", null);
+__decorate([
+    type_graphql_1.Authorized("ADMIN"),
+    type_graphql_1.Subscription((returns) => [schema_1.UserType], {
+        topics: ["NEW_USER"],
+        nullable: true,
+    }),
+    __param(0, type_graphql_1.Root()), __param(1, type_graphql_1.Args()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [schema_1.UserType, UserArgs]),
+    __metadata("design:returntype", Array)
+], UserResolver.prototype, "newUser", null);
 UserResolver = __decorate([
     type_graphql_1.Resolver((of) => schema_1.UserType)
 ], UserResolver);

@@ -56,6 +56,10 @@ __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", Number)
 ], BidInput.prototype, "submitted", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], BidInput.prototype, "prev_value", void 0);
 BidInput = __decorate([
     type_graphql_1.InputType({ description: "A Bid Input" })
 ], BidInput);
@@ -70,7 +74,7 @@ let BidResolver = class BidResolver {
     }
     getUserBids(username) {
         return __awaiter(this, void 0, void 0, function* () {
-            let user = yield db_1.User.find({ username: username });
+            let user = yield db_1.User.findOne({ username: username });
             let bids = Promise.all(user.bids.map((bidId) => __awaiter(this, void 0, void 0, function* () {
                 let bid = yield db_1.Bid.findById(mongoose_1.default.Types.ObjectId(bidId));
                 return bid;
@@ -90,23 +94,42 @@ let BidResolver = class BidResolver {
     }
     makeBid(bid, publish) {
         return __awaiter(this, void 0, void 0, function* () {
-            let newBid = new db_1.Bid({
-                productId: bid.productId,
-                tickets: bid.tickets,
-                user: bid.user,
-            });
+            let currBid;
             let product = yield db_1.Product.findById(mongoose_1.default.Types.ObjectId(bid.productId));
-            product.bids.push(newBid._id);
             let user = yield db_1.User.findOne({ username: bid.user });
-            user.tickets = 5;
-            yield product.save();
-            yield newBid.save();
+            if (user.tickets - (bid.prev_value - bid.tickets) < 0)
+                return null;
+            // new ServerError(
+            //     "low_balance",
+            //     "Ticket balance less than you need to make this bid."
+            //   );
+            console.log(bid);
+            if (bid._id == "-1") {
+                currBid = new db_1.Bid({
+                    productId: bid.productId,
+                    tickets: bid.tickets,
+                    user: bid.user,
+                    prev_value: 0,
+                    submitted: bid.tickets,
+                });
+                product.bids.push(currBid._id);
+                user.bids.push(currBid._id);
+                yield product.save();
+            }
+            else {
+                currBid = yield db_1.Bid.findById(mongoose_1.default.Types.ObjectId(bid._id));
+            }
+            TODO: "Ensure the user doesn't bid more than the tickets they have";
+            user.tickets += bid.submitted - bid.tickets;
             yield user.save();
-            newBid.submitted = newBid.tickets;
+            currBid.prev_value = currBid.tickets;
+            currBid.submitted = currBid.tickets;
+            currBid.tickets = bid.tickets;
+            yield currBid.save();
             // publish the bid
-            yield publish(newBid);
+            yield publish(currBid);
             // return the bid
-            return newBid;
+            return currBid;
         });
     }
     changeBid(bid) {
@@ -154,6 +177,7 @@ __decorate([
     type_graphql_1.Query((returns) => [schema_1.BidType], {
         description: "Get a particular user's bids",
     }),
+    __param(0, type_graphql_1.Arg("username")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
@@ -163,13 +187,17 @@ __decorate([
     type_graphql_1.Query((returns) => [schema_1.BidType], {
         description: "Returns all the bids of a certain product",
     }),
+    __param(0, type_graphql_1.Arg("productId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], BidResolver.prototype, "getProductBids", null);
 __decorate([
     type_graphql_1.Authorized(),
-    type_graphql_1.Mutation((returns) => schema_1.BidType, { description: "Makes a bid for a user" }),
+    type_graphql_1.Mutation((returns) => schema_1.BidType, {
+        description: "Makes a bid for a user",
+        nullable: true,
+    }),
     __param(0, type_graphql_1.Arg("bid")),
     __param(1, type_graphql_1.PubSub("BID_ADDED")),
     __metadata("design:type", Function),

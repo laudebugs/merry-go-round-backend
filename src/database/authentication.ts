@@ -8,21 +8,20 @@ import { psalms } from "./passes";
 
 /**
  * A function to authenticate a user
- * @param username
+ * @param email
  * @param password
- * @returns null if a user can't be authenticated, the username and token if otherwise
+ * @returns null if a user can't be authenticated, the email and token if otherwise
  */
 
 export const authenticateUser = async (
-  username,
+  email,
   password
 ): Promise<string | Error> => {
   try {
     // Verify the Use
     const user: typeof User | any = await User.findOne({
-      username: username,
+      email: email,
     }).exec();
-    console.log(user);
 
     if (!user) {
       return null;
@@ -34,7 +33,7 @@ export const authenticateUser = async (
       return null;
     }
 
-    const token = generateToken(username, user.roles);
+    const token = generateToken(user.username, email, user.roles);
 
     return token;
   } catch (error) {
@@ -45,13 +44,14 @@ export const authenticateUser = async (
 
 /**
  * Generates a JWT Token
- * @param username
+ * @param email
  * @param password
  */
-export const generateToken = (username, roles): string => {
+export const generateToken = (username, email, roles): string => {
   const token = jwt.sign(
     {
       username: username,
+      email: email,
       roles: roles,
       iat: Math.floor(Date.now()),
     },
@@ -81,7 +81,7 @@ export const verifyToken = (token: string) => {
 export const getAuthenticatedUser = async (token: String) => {
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    let user = await User.find({ username: decoded.username });
+    let user = await User.find({ email: decoded.email });
     return user;
   } catch (error) {
     console.log(error.message);
@@ -99,9 +99,15 @@ export const resetPassword = async (email: String) => {
 
     await user.save();
 
-    return [user.username, randomPass];
+    return [user.email, randomPass];
   } catch (error) {
     console.log(error);
     return [null, null];
   }
+};
+
+export const genPassword = async (email: String) => {
+  let random = Math.floor(Math.random() * psalms.phrases.length);
+  let randomPass = psalms.phrases[random];
+  return randomPass;
 };

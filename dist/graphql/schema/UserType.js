@@ -34,6 +34,10 @@ __decorate([
     __metadata("design:type", Number)
 ], UserType.prototype, "tickets", void 0);
 __decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], UserType.prototype, "totalTickets", void 0);
+__decorate([
     type_graphql_1.Field((type) => Number),
     __metadata("design:type", Number)
 ], UserType.prototype, "award", void 0);

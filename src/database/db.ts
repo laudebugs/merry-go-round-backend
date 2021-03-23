@@ -42,13 +42,17 @@ const UserSchema = new Schema({
     },
   },
   tickets: Number,
+  totalTickets: Number,
   // @ts-ignore
   bids: [{ type: Schema.ObjectId, ref: "Bid" }],
   // @ts-ignore
 
   award: { type: Schema.ObjectId, ref: "Award" },
   roles: [String],
-  avatar: Number,
+  avatar: {
+    required: true,
+    type: Number,
+  },
 });
 const ProductSchema = new Schema({
   name: String,
@@ -65,6 +69,8 @@ const BidSchema = new Schema({
   // @ts-ignore
 
   user: String,
+  submitted: Number,
+  prev_value: Number,
 });
 
 UserSchema.pre("save", async function preSave(next) {

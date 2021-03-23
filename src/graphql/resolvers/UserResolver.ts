@@ -1,21 +1,31 @@
 import {
   Arg,
+  Args,
+  ArgsType,
   Authorized,
   Field,
   InputType,
   Mutation,
+  Publisher,
+  PubSub,
   Query,
   Resolver,
+  Root,
+  Subscription,
 } from "type-graphql";
 import {
   authenticateUser,
   generateToken,
+  genPassword,
   resetPassword,
 } from "../../database/authentication";
 import { User } from "../../database/db";
-import { sendResetEmail } from "../../mail/passwordReset";
+import { sendResetEmail, sendWelcomeEmail } from "../../mail/templates";
 import { Role, UserType } from "../schema";
 import { Error } from "../schema/Error";
+
+@ArgsType()
+class UserArgs extends UserType {}
 
 @InputType({ description: "A User Input" })
 export class UserInput {
@@ -29,9 +39,6 @@ export class UserInput {
   email: String;
 
   @Field()
-  password: String;
-
-  @Field()
   avatar: Number;
 
   @Authorized(["SUPER"])
@@ -42,7 +49,7 @@ export class UserInput {
 @InputType({ description: "Credentials of a user" })
 export class Credentials {
   @Field()
-  username: string;
+  email: string;
   @Field()
   password: string;
 }
@@ -59,8 +66,9 @@ export default class UserResolver {
     description: "Returns a user based on a user's username",
   })
   //@ts-ignore
-  async getUser(@Arg("username") username: String): UserType {
-    let user: UserType | any = await User.findOne({ username: username });
+  async getUser(@Arg("email") email: String): UserType {
+    let user: UserType | any = await User.findOne({ email: email });
+    console.log(user);
     return user;
   }
   /**
@@ -75,12 +83,10 @@ export default class UserResolver {
   })
   //@ts-ignore
   async signin(@Arg("credentials") credentials: Credentials) {
-    console.log(credentials);
     let token: string | Error = await authenticateUser(
-      credentials.username,
+      credentials.email,
       credentials.password
     );
-    console.log(token);
     return token;
   }
 
@@ -88,21 +94,32 @@ export default class UserResolver {
    *
    * @param user
    */
-  @Mutation({ description: "Signs up a user" })
+  @Mutation((returns) => String, { description: "Signs up a user" })
   //@ts-ignore
-  async signup(@Arg("user") user: UserInput): String | null {
+  async signup(
+    @Arg("user") user: UserInput,
+    @PubSub("NEW_USER") publish: Publisher<UserType>
+  ): Promise<String> {
     //TODO: "Sign up and send JWT"
+
+    const password = await genPassword(user.email);
     let newUser: UserType | any = new User({
       username: user.username,
-      password: user.password,
       email: user.email,
+      password: password,
       tickets: 5,
       roles: [],
       avatar: user.avatar,
+      totalTickets: 5,
     });
+
+    // Send the welcome email
+    await sendWelcomeEmail(user.email, user.username, password);
     // returns a JWT that can then be used to verify a user
     await newUser.save();
-    let token: string = generateToken(user.username, user.roles);
+
+    await publish(newUser);
+    let token: string = generateToken(user.username, user.email, []);
     return token;
   }
   @Authorized()
@@ -113,7 +130,6 @@ export default class UserResolver {
   //TODO: "Sign up and send JWT"
   signout(jwt: String) {
     // Deauthorize the JWT
-
     return "";
   }
 
@@ -131,5 +147,21 @@ export default class UserResolver {
 
     return true;
     // Set the new password
+  }
+
+  @Query((returns) => [UserType])
+  async getAllUsers(): Promise<UserType[]> {
+    let users: UserType | any = await User.find();
+    return users;
+  }
+  @Authorized("ADMIN")
+  @Subscription((returns) => [UserType], {
+    topics: ["NEW_USER"],
+    nullable: true,
+  })
+  newUser(@Root() userPayload: UserType, @Args() args: UserArgs): [UserType] {
+    // @ts-ignore
+    const user = userPayload._doc;
+    return user;
   }
 }

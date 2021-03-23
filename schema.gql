@@ -6,6 +6,7 @@
 """A Bid Input"""
 input BidInput {
   _id: String
+  prev_value: Float!
   productId: String!
   submitted: Float!
   tickets: Float!
@@ -14,6 +15,7 @@ input BidInput {
 
 type BidType {
   _id: String!
+  prev_value: Float!
   productId: String!
   submitted: Boolean!
   tickets: Float!
@@ -22,8 +24,8 @@ type BidType {
 
 """Credentials of a user"""
 input Credentials {
+  email: String!
   password: String!
-  username: String!
 }
 
 type Mutation {
@@ -40,7 +42,7 @@ type Mutation {
   deleteBid(bid: BidInput!): BidType!
 
   """Makes a bid for a user"""
-  makeBid(bid: BidInput!): BidType!
+  makeBid(bid: BidInput!): BidType
 
   """Requests a new password"""
   resetPassword(email: String!): Boolean
@@ -76,21 +78,22 @@ type ProductType {
 
 type Query {
   getAllBids: [BidType!]!
+  getAllUsers: [UserType!]!
 
   """Returns all bids"""
   getBids: [BidType!]!
 
   """Returns all the bids of a certain product"""
-  getProductBids: [BidType!]!
+  getProductBids(productId: String!): [BidType!]!
 
   """Gets all the products in the database"""
   getProducts: [ProductType!]!
 
   """Returns a user based on a user's username"""
-  getUser(username: String!): UserType
+  getUser(email: String!): UserType
 
   """Get a particular user's bids"""
-  getUserBids: [BidType!]!
+  getUserBids(username: String!): [BidType!]!
 }
 
 """Roles of a User based on access"""
@@ -104,6 +107,7 @@ enum Role {
 
 type Subscription {
   bidAdded: [BidType!]
+  newUser: [UserType!]
   productAdded: ProductType!
 }
 
@@ -112,7 +116,6 @@ input UserInput {
   _id: Float
   avatar: Float!
   email: String!
-  password: String!
   roles: Role
   username: String!
 }
@@ -125,5 +128,6 @@ type UserType {
   email: String!
   roles: Role
   tickets: Float!
+  totalTickets: Float!
   username: String!
 }
