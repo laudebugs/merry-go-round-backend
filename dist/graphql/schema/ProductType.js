@@ -41,6 +41,10 @@ __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
 ], ProductType.prototype, "owner", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], ProductType.prototype, "likes", void 0);
 ProductType = __decorate([
     type_graphql_1.ObjectType()
 ], ProductType);

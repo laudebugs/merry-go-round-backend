@@ -26,6 +26,10 @@ __decorate([
     __metadata("design:type", Array)
 ], UserType.prototype, "bids", void 0);
 __decorate([
+    type_graphql_1.Field((type) => [String]),
+    __metadata("design:type", Array)
+], UserType.prototype, "likedProducts", void 0);
+__decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
 ], UserType.prototype, "email", void 0);

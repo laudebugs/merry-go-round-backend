@@ -56,6 +56,8 @@ const UserSchema = new Schema({
     // @ts-ignore
     bids: [{ type: Schema.ObjectId, ref: "Bid" }],
     // @ts-ignore
+    likedProducts: [{ type: Schema.ObjectId, ref: "Product" }],
+    // @ts-ignore
     award: { type: Schema.ObjectId, ref: "Award" },
     roles: [String],
     avatar: {
@@ -71,6 +73,7 @@ const ProductSchema = new Schema({
     owner: String,
     // @ts-ignore
     bids: [{ type: Schema.ObjectId, ref: "Bid" }],
+    likes: Number,
 });
 const BidSchema = new Schema({
     productId: String,

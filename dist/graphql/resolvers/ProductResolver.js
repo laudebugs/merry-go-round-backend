@@ -100,6 +100,39 @@ let ProductResolver = class ProductResolver {
             return allBids;
         });
     }
+    getNumberOfLikes(productId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let product = yield db_1.Product.findById(mongoose_1.default.Types.ObjectId(productId));
+                if (!product.likes)
+                    product.likes = 0;
+                // await product.save();
+                return product.likes;
+            }
+            catch (error) {
+                console.log("ici");
+                console.log(error.message);
+                return 0;
+            }
+        });
+    }
+    likeProduct(username, productId, liked) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let product = yield db_1.Product.findById(mongoose_1.default.Types.ObjectId(productId));
+            let user = yield db_1.User.findOne({ username: username });
+            product.likes += liked ? 1 : -1;
+            if (liked) {
+                user.likedProducts.push(product._id);
+            }
+            else {
+                let index = user.likedProducts.indexOf(productId);
+                user.likedProducts.splice(index, 1);
+            }
+            yield user.save();
+            yield product.save();
+            return product.likes;
+        });
+    }
     productAdded(productPayload, args) {
         console.log(productPayload);
         //@ts-ignore
@@ -142,6 +175,25 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "getAllBids", null);
+__decorate([
+    type_graphql_1.Query((returns) => Number, {
+        nullable: false,
+        description: "Get the number of likes of a product",
+    }),
+    __param(0, type_graphql_1.Arg("productId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ProductResolver.prototype, "getNumberOfLikes", null);
+__decorate([
+    type_graphql_1.Mutation((returns) => Number),
+    __param(0, type_graphql_1.Arg("username")),
+    __param(1, type_graphql_1.Arg("productId")),
+    __param(2, type_graphql_1.Arg("liked")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Boolean]),
+    __metadata("design:returntype", Promise)
+], ProductResolver.prototype, "likeProduct", null);
 __decorate([
     type_graphql_1.Subscription({
         topics: "PRODUCT",

@@ -22,4 +22,7 @@ export default class ProductType {
 
   @Field()
   owner: String;
+
+  @Field()
+  likes: Number;
 }
