@@ -25,6 +25,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Credentials = exports.UserInput = void 0;
+const slug_1 = require("slug");
 const type_graphql_1 = require("type-graphql");
 const authentication_1 = require("../../database/authentication");
 const db_1 = require("../../database/db");
@@ -110,7 +111,7 @@ let UserResolver = class UserResolver {
             //TODO: "Sign up and send JWT"
             const password = yield authentication_1.genPassword(user.email);
             let newUser = new db_1.User({
-                username: user.username,
+                username: slug_1.slug(user.username),
                 email: user.email,
                 password: password,
                 tickets: 5,

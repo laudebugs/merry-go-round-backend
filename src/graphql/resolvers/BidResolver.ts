@@ -68,6 +68,14 @@ export default class BidResolver {
     return bids;
   }
 
+  @Authorized()
+  @Query((returns) => [BidType])
+  async getEveryBid(): Promise<BidType[]> {
+    let allBids: BidType | any = await Bid.find();
+    allBids = allBids.filter((bid) => bid.tickets > 0);
+    return allBids;
+  }
+
   @Authorized(["ADMIN"])
   @Query((returns) => [BidType], {
     description: "Returns all the bids of a certain product",

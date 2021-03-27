@@ -92,6 +92,7 @@ type Query {
 
   """Returns all bids"""
   getBids: [BidType!]!
+  getEveryBid: [BidType!]!
 
   """Get the number of likes of a product"""
   getNumberOfLikes(productId: String!): Float!

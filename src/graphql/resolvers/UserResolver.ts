@@ -1,3 +1,4 @@
+import { slug } from "slug";
 import {
   Arg,
   Args,
@@ -104,7 +105,7 @@ export default class UserResolver {
 
     const password = await genPassword(user.email);
     let newUser: UserType | any = new User({
-      username: user.username,
+      username: slug(user.username),
       email: user.email,
       password: password,
       tickets: 5,

@@ -82,6 +82,13 @@ let BidResolver = class BidResolver {
             return bids;
         });
     }
+    getEveryBid() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let allBids = yield db_1.Bid.find();
+            allBids = allBids.filter((bid) => bid.tickets > 0);
+            return allBids;
+        });
+    }
     getProductBids(productId) {
         return __awaiter(this, void 0, void 0, function* () {
             let product = yield db_1.Product.findById(mongoose_1.default.Types.ObjectId(productId));
@@ -181,6 +188,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], BidResolver.prototype, "getUserBids", null);
+__decorate([
+    type_graphql_1.Authorized(),
+    type_graphql_1.Query((returns) => [schema_1.BidType]),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], BidResolver.prototype, "getEveryBid", null);
 __decorate([
     type_graphql_1.Authorized(["ADMIN"]),
     type_graphql_1.Query((returns) => [schema_1.BidType], {
