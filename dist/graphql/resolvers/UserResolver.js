@@ -172,8 +172,8 @@ let UserResolver = class UserResolver {
             }
             else {
                 state.active = true;
+                state.startTime = Date.now();
             }
-            console.log(state);
             yield state.save();
             return state;
         });
@@ -186,6 +186,7 @@ let UserResolver = class UserResolver {
             }
             else {
                 state.active = false;
+                state.endTime = Date.now();
             }
             yield state.save();
             return state;

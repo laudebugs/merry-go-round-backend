@@ -190,8 +190,8 @@ export default class UserResolver {
       state = new State({ active: true, startTime: Date.now() });
     } else {
       state.active = true;
+      state.startTime = Date.now();
     }
-    console.log(state);
     await state.save();
 
     return state;
@@ -205,6 +205,7 @@ export default class UserResolver {
       state = new State({ active: false });
     } else {
       state.active = false;
+      state.endTime = Date.now();
     }
     await state.save();
 
