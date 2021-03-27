@@ -20,6 +20,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Credentials = exports.UserInput = void 0;
 const type_graphql_1 = require("type-graphql");
@@ -27,6 +30,7 @@ const authentication_1 = require("../../database/authentication");
 const db_1 = require("../../database/db");
 const templates_1 = require("../../mail/templates");
 const schema_1 = require("../schema");
+const StateType_1 = __importDefault(require("../schema/StateType"));
 let UserArgs = class UserArgs extends schema_1.UserType {
 };
 UserArgs = __decorate([
@@ -160,6 +164,45 @@ let UserResolver = class UserResolver {
         const user = userPayload._doc;
         return user;
     }
+    startBidding() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let state = yield db_1.State.findOne();
+            if (!state) {
+                state = new db_1.State({ active: true, startTime: Date.now() });
+            }
+            else {
+                state.active = true;
+                state.startTime = Date.now();
+            }
+            yield state.save();
+            return state;
+        });
+    }
+    stopBidding() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let state = yield db_1.State.findOne();
+            if (!state) {
+                state = new db_1.State({ active: false });
+            }
+            else {
+                state.active = false;
+                state.endTime = Date.now();
+            }
+            yield state.save();
+            return state;
+        });
+    }
+    getState() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const state = yield db_1.State.findOne();
+            if (!state) {
+                return null;
+            }
+            else {
+                return state;
+            }
+        });
+    }
 };
 __decorate([
     type_graphql_1.Query((returns) => schema_1.UserType, {
@@ -236,6 +279,27 @@ __decorate([
     __metadata("design:paramtypes", [schema_1.UserType, UserArgs]),
     __metadata("design:returntype", Array)
 ], UserResolver.prototype, "newUser", null);
+__decorate([
+    type_graphql_1.Authorized("ADMIN"),
+    type_graphql_1.Mutation((returns) => StateType_1.default),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "startBidding", null);
+__decorate([
+    type_graphql_1.Authorized("ADMIN"),
+    type_graphql_1.Mutation((returns) => StateType_1.default),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "stopBidding", null);
+__decorate([
+    type_graphql_1.Authorized(),
+    type_graphql_1.Query((returns) => StateType_1.default, { nullable: true }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "getState", null);
 UserResolver = __decorate([
     type_graphql_1.Resolver((of) => schema_1.UserType)
 ], UserResolver);

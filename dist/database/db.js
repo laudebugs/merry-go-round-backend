@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Product = exports.Bid = exports.User = void 0;
+exports.State = exports.Product = exports.Bid = exports.User = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const email_validator_1 = __importDefault(require("email-validator"));
 const mongoose_1 = __importDefault(require("mongoose"));
@@ -64,6 +64,11 @@ const UserSchema = new Schema({
         required: true,
         type: Number,
     },
+});
+const StateSchema = new Schema({
+    active: { type: Boolean, default: false },
+    startTime: { type: Date, default: Date.now() },
+    endTime: { type: Date, default: Date.now() },
 });
 const ProductSchema = new Schema({
     name: String,
@@ -120,3 +125,5 @@ const Bid = mongoose_1.default.model("Bid", BidSchema);
 exports.Bid = Bid;
 const Product = mongoose_1.default.model("Product", ProductSchema);
 exports.Product = Product;
+const State = mongoose_1.default.model("State", StateSchema);
+exports.State = State;

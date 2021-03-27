@@ -28,6 +28,11 @@ input Credentials {
   password: String!
 }
 
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
 type Mutation {
   """Adds a product to the database"""
   addProduct(product: ProductInput!): ProductType!
@@ -57,6 +62,8 @@ type Mutation {
 
   """Signs up a user"""
   signup(user: UserInput!): String!
+  startBidding: StateType!
+  stopBidding: StateType!
 }
 
 """A Product Input"""
@@ -70,7 +77,7 @@ input ProductInput {
 
 type ProductType {
   _id: String!
-  awardee: UserType!
+  awardee: String
   bids: [String!]!
   description: String!
   likes: Float!
@@ -94,6 +101,7 @@ type Query {
 
   """Gets all the products in the database"""
   getProducts: [ProductType!]!
+  getState: StateType
 
   """Returns a user based on a user's username"""
   getUser(email: String!): UserType
@@ -109,6 +117,12 @@ enum Role {
 
   """An Admin has all privilages"""
   SUPER
+}
+
+type StateType {
+  active: Boolean!
+  endTime: DateTime!
+  startTime: DateTime!
 }
 
 type Subscription {
