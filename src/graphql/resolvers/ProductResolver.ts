@@ -14,7 +14,7 @@ import {
   Root,
   Subscription,
 } from "type-graphql";
-import { Bid, Product } from "../../database/db";
+import { Bid, Product, User } from "../../database/db";
 import { BidType, ProductType } from "../schema";
 
 @InputType({ description: "A Product Input" })
@@ -81,7 +81,7 @@ export default class ProductResolver {
     @Arg("productId", { nullable: true }) productId?: string,
     @Arg("username", { nullable: true }) username?: string
   ): Promise<ProductType> {
-    let product: typeof Product | any = await Product.findById(
+    let product: ProductType | any = await Product.findById(
       mongoose.Types.ObjectId(productId)
     );
     product.awardee = username;
@@ -96,6 +96,50 @@ export default class ProductResolver {
     return allBids;
   }
 
+  @Query((returns) => Number, {
+    nullable: false,
+    description: "Get the number of likes of a product",
+  })
+  async getNumberOfLikes(@Arg("productId") productId: string): Promise<number> {
+    try {
+      let product: ProductType | any = await Product.findById(
+        mongoose.Types.ObjectId(productId)
+      );
+
+      if (!product.likes) product.likes = 0;
+
+      // await product.save();
+
+      return product.likes;
+    } catch (error) {
+      console.log("ici");
+      console.log(error.message);
+      return 0;
+    }
+  }
+  @Mutation((returns) => Number)
+  async likeProduct(
+    @Arg("username") username: string,
+    @Arg("productId") productId: string,
+    @Arg("liked") liked: Boolean
+  ): Promise<number> {
+    let product: ProductType | any = await Product.findById(
+      mongoose.Types.ObjectId(productId)
+    );
+    let user: typeof User | any = await User.findOne({ username: username });
+    product.likes += liked ? 1 : -1;
+    if (liked) {
+      user.likedProducts.push(product._id);
+    } else {
+      let index = user.likedProducts.indexOf(productId);
+      user.likedProducts.splice(index, 1);
+    }
+
+    await user.save();
+    await product.save();
+
+    return product.likes;
+  }
   @Subscription({
     topics: "PRODUCT",
   })

@@ -41,6 +41,7 @@ type Mutation {
 
   """Deletes a bid that a user made"""
   deleteBid(bid: BidInput!): BidType!
+  likeProduct(liked: Boolean!, productId: String!, username: String!): Float!
 
   """Makes a bid for a user"""
   makeBid(bid: BidInput!): BidType
@@ -72,6 +73,7 @@ type ProductType {
   awardee: UserType!
   bids: [String!]!
   description: String!
+  likes: Float!
   name: String!
   owner: String!
   photo: String!
@@ -83,6 +85,9 @@ type Query {
 
   """Returns all bids"""
   getBids: [BidType!]!
+
+  """Get the number of likes of a product"""
+  getNumberOfLikes(productId: String!): Float!
 
   """Returns all the bids of a certain product"""
   getProductBids(productId: String!): [BidType!]!
@@ -127,6 +132,7 @@ type UserType {
   award: Float!
   bids: [String!]!
   email: String!
+  likedProducts: [String!]!
   roles: Role
   tickets: Float!
   totalTickets: Float!

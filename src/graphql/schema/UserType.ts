@@ -12,6 +12,9 @@ export default class UserType {
   @Field((type) => [String])
   bids: [String];
 
+  @Field((type) => [String])
+  likedProducts: [String];
+
   @Field()
   email?: String;
 
