@@ -12,4 +12,3 @@ const Role_1 = require("./Role");
 Object.defineProperty(exports, "Role", { enumerable: true, get: function () { return Role_1.Role; } });
 const UserType_1 = __importDefault(require("./UserType"));
 exports.UserType = UserType_1.default;
-//# sourceMappingURL=index.js.map

@@ -45,4 +45,3 @@ ProductType = __decorate([
     type_graphql_1.ObjectType()
 ], ProductType);
 exports.default = ProductType;
-//# sourceMappingURL=ProductType.js.map

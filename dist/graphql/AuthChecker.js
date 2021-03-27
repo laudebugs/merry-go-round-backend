@@ -29,4 +29,3 @@ const AuthCheckerFn = ({ root, args, context, info }, roles) => {
     return false; // or false if access id denied
 };
 exports.AuthCheckerFn = AuthCheckerFn;
-//# sourceMappingURL=AuthChecker.js.map

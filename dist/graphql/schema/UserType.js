@@ -54,4 +54,3 @@ UserType = __decorate([
     type_graphql_1.ObjectType()
 ], UserType);
 exports.default = UserType;
-//# sourceMappingURL=UserType.js.map

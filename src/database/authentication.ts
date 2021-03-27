@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { UserType } from "../graphql/schema";
 import { Error } from "../graphql/schema/Error";
 import { User } from "./db";
-import { psalms } from "./passes";
+import { passes } from "./passes";
 
 // let conf = require("dotenv").config("../../").parsed;
 
@@ -92,8 +92,8 @@ export const resetPassword = async (email: String) => {
   try {
     let user: UserType | any = await User.findOne({ email: email });
 
-    let random = Math.floor(Math.random() * psalms.phrases.length);
-    let randomPass = psalms.phrases[random];
+    let random = Math.floor(Math.random() * passes.length);
+    let randomPass = passes[random];
 
     user.password = randomPass;
 
@@ -107,7 +107,7 @@ export const resetPassword = async (email: String) => {
 };
 
 export const genPassword = async (email: String) => {
-  let random = Math.floor(Math.random() * psalms.phrases.length);
-  let randomPass = psalms.phrases[random];
+  let random = Math.floor(Math.random() * passes.length);
+  let randomPass = passes[random];
   return randomPass;
 };

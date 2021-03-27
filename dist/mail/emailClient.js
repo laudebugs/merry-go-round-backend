@@ -13,4 +13,3 @@ const emailClient = nodemailer.createTransport({
     },
 });
 exports.default = emailClient;
-//# sourceMappingURL=emailClient.js.map

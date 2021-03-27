@@ -31,4 +31,3 @@ type_graphql_1.registerEnumType(Error, {
         },
     },
 });
-//# sourceMappingURL=Error.js.map

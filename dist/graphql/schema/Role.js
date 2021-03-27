@@ -19,4 +19,3 @@ type_graphql_1.registerEnumType(Role, {
         },
     },
 });
-//# sourceMappingURL=Role.js.map

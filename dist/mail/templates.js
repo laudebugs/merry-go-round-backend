@@ -74,4 +74,3 @@ function sendResetEmail(recipient, username, password) {
     });
 }
 exports.sendResetEmail = sendResetEmail;
-//# sourceMappingURL=templates.js.map

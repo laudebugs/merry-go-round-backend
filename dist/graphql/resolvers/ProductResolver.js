@@ -157,4 +157,3 @@ ProductResolver = __decorate([
     type_graphql_1.Resolver((of) => schema_1.ProductType)
 ], ProductResolver);
 exports.default = ProductResolver;
-//# sourceMappingURL=ProductResolver.js.map

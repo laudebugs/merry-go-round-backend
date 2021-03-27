@@ -117,4 +117,3 @@ const Bid = mongoose_1.default.model("Bid", BidSchema);
 exports.Bid = Bid;
 const Product = mongoose_1.default.model("Product", ProductSchema);
 exports.Product = Product;
-//# sourceMappingURL=db.js.map

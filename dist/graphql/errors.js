@@ -31,4 +31,3 @@ ServerError = __decorate([
     __metadata("design:paramtypes", [String, String])
 ], ServerError);
 exports.ServerError = ServerError;
-//# sourceMappingURL=errors.js.map

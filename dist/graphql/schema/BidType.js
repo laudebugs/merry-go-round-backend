@@ -40,4 +40,3 @@ BidType = __decorate([
     type_graphql_1.ObjectType()
 ], BidType);
 exports.default = BidType;
-//# sourceMappingURL=BidType.js.map

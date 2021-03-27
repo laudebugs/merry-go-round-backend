@@ -95,8 +95,8 @@ exports.getAuthenticatedUser = getAuthenticatedUser;
 const resetPassword = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let user = yield db_1.User.findOne({ email: email });
-        let random = Math.floor(Math.random() * passes_1.psalms.phrases.length);
-        let randomPass = passes_1.psalms.phrases[random];
+        let random = Math.floor(Math.random() * passes_1.passes.length);
+        let randomPass = passes_1.passes[random];
         user.password = randomPass;
         yield user.save();
         return [user.email, randomPass];
@@ -108,9 +108,8 @@ const resetPassword = (email) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.resetPassword = resetPassword;
 const genPassword = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    let random = Math.floor(Math.random() * passes_1.psalms.phrases.length);
-    let randomPass = passes_1.psalms.phrases[random];
+    let random = Math.floor(Math.random() * passes_1.passes.length);
+    let randomPass = passes_1.passes[random];
     return randomPass;
 });
 exports.genPassword = genPassword;
-//# sourceMappingURL=authentication.js.map

@@ -113,14 +113,15 @@ export default class UserResolver {
     });
 
     // Send the welcome email
-    await sendWelcomeEmail(user.email, user.username, password);
+    sendWelcomeEmail(user.email, user.username, password);
     // returns a JWT that can then be used to verify a user
     await newUser.save();
 
-    await publish(newUser);
+    publish(newUser);
     let token: string = generateToken(user.username, user.email, []);
     return token;
   }
+
   @Authorized()
   @Mutation((returns) => String, {
     nullable: true,

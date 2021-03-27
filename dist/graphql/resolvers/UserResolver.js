@@ -115,10 +115,10 @@ let UserResolver = class UserResolver {
                 totalTickets: 5,
             });
             // Send the welcome email
-            yield templates_1.sendWelcomeEmail(user.email, user.username, password);
+            templates_1.sendWelcomeEmail(user.email, user.username, password);
             // returns a JWT that can then be used to verify a user
             yield newUser.save();
-            yield publish(newUser);
+            publish(newUser);
             let token = authentication_1.generateToken(user.username, user.email, []);
             return token;
         });
@@ -240,4 +240,3 @@ UserResolver = __decorate([
     type_graphql_1.Resolver((of) => schema_1.UserType)
 ], UserResolver);
 exports.default = UserResolver;
-//# sourceMappingURL=UserResolver.js.map

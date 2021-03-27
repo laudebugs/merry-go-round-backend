@@ -61,4 +61,3 @@ require("./database/db");
         });
     });
 })();
-//# sourceMappingURL=index.js.map

@@ -10,4 +10,3 @@ const ProductResolver_1 = __importDefault(require("./ProductResolver"));
 exports.ProductResolver = ProductResolver_1.default;
 const UserResolver_1 = __importDefault(require("./UserResolver"));
 exports.UserResolver = UserResolver_1.default;
-//# sourceMappingURL=index.js.map

@@ -237,4 +237,3 @@ BidResolver = __decorate([
     type_graphql_1.Resolver((of) => schema_1.BidType)
 ], BidResolver);
 exports.default = BidResolver;
-//# sourceMappingURL=BidResolver.js.map
