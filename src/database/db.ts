@@ -55,6 +55,12 @@ const UserSchema = new Schema({
     type: Number,
   },
 });
+
+const StateSchema = new Schema({
+  active: { type: Boolean, default: false },
+  startTime: { type: Date, default: Date.now() },
+  endTime: { type: Date, default: Date.now() },
+});
 const ProductSchema = new Schema({
   name: String,
   awardee: String,
@@ -107,4 +113,6 @@ BidSchema.pre("remove", async function preRemove(next) {
 const User = mongoose.model("User", UserSchema);
 const Bid = mongoose.model("Bid", BidSchema);
 const Product = mongoose.model("Product", ProductSchema);
-export { User, Bid, Product };
+const State = mongoose.model("State", StateSchema);
+
+export { User, Bid, Product, State };

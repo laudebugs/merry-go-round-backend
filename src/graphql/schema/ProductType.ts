@@ -8,8 +8,8 @@ export default class ProductType {
   @Field()
   name: String;
 
-  @Field((type) => UserType)
-  awardee: UserType;
+  @Field((type) => String, { nullable: true })
+  awardee: String;
 
   @Field((type) => [String])
   bids: [String];

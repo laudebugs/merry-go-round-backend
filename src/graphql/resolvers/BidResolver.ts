@@ -78,14 +78,15 @@ export default class BidResolver {
     let product: ProductType | any = await Product.findById(
       mongoose.Types.ObjectId(productId)
     );
-    let bids = Promise.all<BidType>(
+    let bids = await Promise.all<BidType>(
       product.bids.map(async (bidId) => {
         let bid = await Bid.findById(mongoose.Types.ObjectId(bidId));
         return bid;
       })
     );
-    return bids;
+    return bids.filter((bid) => !!bid);
   }
+
   @Authorized()
   @Mutation((returns) => BidType, {
     description: "Makes a bid for a user",

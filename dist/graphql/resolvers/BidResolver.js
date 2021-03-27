@@ -85,11 +85,11 @@ let BidResolver = class BidResolver {
     getProductBids(productId) {
         return __awaiter(this, void 0, void 0, function* () {
             let product = yield db_1.Product.findById(mongoose_1.default.Types.ObjectId(productId));
-            let bids = Promise.all(product.bids.map((bidId) => __awaiter(this, void 0, void 0, function* () {
+            let bids = yield Promise.all(product.bids.map((bidId) => __awaiter(this, void 0, void 0, function* () {
                 let bid = yield db_1.Bid.findById(mongoose_1.default.Types.ObjectId(bidId));
                 return bid;
             })));
-            return bids;
+            return bids.filter((bid) => !!bid);
         });
     }
     makeBid(bid, publish) {

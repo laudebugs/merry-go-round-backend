@@ -85,6 +85,7 @@ export default class ProductResolver {
       mongoose.Types.ObjectId(productId)
     );
     product.awardee = username;
+    console.log(product);
     await product.save();
     return product;
   }

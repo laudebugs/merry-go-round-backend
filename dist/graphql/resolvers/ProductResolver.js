@@ -90,6 +90,7 @@ let ProductResolver = class ProductResolver {
         return __awaiter(this, void 0, void 0, function* () {
             let product = yield db_1.Product.findById(mongoose_1.default.Types.ObjectId(productId));
             product.awardee = username;
+            console.log(product);
             yield product.save();
             return product;
         });

@@ -10,41 +10,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const type_graphql_1 = require("type-graphql");
-let ProductType = class ProductType {
+let StateType = class StateType {
 };
 __decorate([
     type_graphql_1.Field(),
-    __metadata("design:type", String)
-], ProductType.prototype, "_id", void 0);
+    __metadata("design:type", Boolean)
+], StateType.prototype, "active", void 0);
 __decorate([
     type_graphql_1.Field(),
-    __metadata("design:type", String)
-], ProductType.prototype, "name", void 0);
-__decorate([
-    type_graphql_1.Field((type) => String, { nullable: true }),
-    __metadata("design:type", String)
-], ProductType.prototype, "awardee", void 0);
-__decorate([
-    type_graphql_1.Field((type) => [String]),
-    __metadata("design:type", Array)
-], ProductType.prototype, "bids", void 0);
+    __metadata("design:type", Date)
+], StateType.prototype, "startTime", void 0);
 __decorate([
     type_graphql_1.Field(),
-    __metadata("design:type", String)
-], ProductType.prototype, "description", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", String)
-], ProductType.prototype, "photo", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", String)
-], ProductType.prototype, "owner", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", Number)
-], ProductType.prototype, "likes", void 0);
-ProductType = __decorate([
+    __metadata("design:type", Date)
+], StateType.prototype, "endTime", void 0);
+StateType = __decorate([
     type_graphql_1.ObjectType()
-], ProductType);
-exports.default = ProductType;
+], StateType);
+exports.default = StateType;

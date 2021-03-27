@@ -19,10 +19,11 @@ import {
   genPassword,
   resetPassword,
 } from "../../database/authentication";
-import { User } from "../../database/db";
+import { State, User } from "../../database/db";
 import { sendResetEmail, sendWelcomeEmail } from "../../mail/templates";
 import { Role, UserType } from "../schema";
 import { Error } from "../schema/Error";
+import StateType from "../schema/StateType";
 
 @ArgsType()
 class UserArgs extends UserType {}
@@ -179,5 +180,45 @@ export default class UserResolver {
     // @ts-ignore
     const user = userPayload._doc;
     return user;
+  }
+
+  @Authorized("ADMIN")
+  @Mutation((returns) => StateType)
+  async startBidding() {
+    let state: StateType | any = await State.findOne();
+    if (!state) {
+      state = new State({ active: true, startTime: Date.now() });
+    } else {
+      state.active = true;
+    }
+    console.log(state);
+    await state.save();
+
+    return state;
+  }
+
+  @Authorized("ADMIN")
+  @Mutation((returns) => StateType)
+  async stopBidding() {
+    let state: StateType | any = await State.findOne();
+    if (!state) {
+      state = new State({ active: false });
+    } else {
+      state.active = false;
+    }
+    await state.save();
+
+    return state;
+  }
+
+  @Authorized()
+  @Query((returns) => StateType, { nullable: true })
+  async getState(): Promise<Boolean> {
+    const state: StateType | any = await State.findOne();
+    if (!state) {
+      return null;
+    } else {
+      return state;
+    }
   }
 }
