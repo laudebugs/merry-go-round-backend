@@ -66,6 +66,7 @@ export default class ProductResolver {
       photo: product.photo,
       bids: [],
       owner: product.owner,
+      likes: 0,
     });
     await newProduct.save();
 
