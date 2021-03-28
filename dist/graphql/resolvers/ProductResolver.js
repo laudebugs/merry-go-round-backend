@@ -79,6 +79,7 @@ let ProductResolver = class ProductResolver {
                 photo: product.photo,
                 bids: [],
                 owner: product.owner,
+                likes: 0,
             });
             yield newProduct.save();
             // await pubSub.publish("PRODUCT", newProduct);

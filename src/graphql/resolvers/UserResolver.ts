@@ -183,7 +183,7 @@ export default class UserResolver {
     return user;
   }
 
-  @Authorized("ADMIN")
+  @Authorized("SUPER")
   @Mutation((returns) => StateType)
   async startBidding() {
     let state: StateType | any = await State.findOne();

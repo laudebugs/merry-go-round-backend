@@ -79,7 +79,7 @@ const ProductSchema = new Schema({
     owner: String,
     // @ts-ignore
     bids: [{ type: Schema.ObjectId, ref: "Bid" }],
-    likes: Number,
+    likes: { type: Number, default: 0 },
 });
 const BidSchema = new Schema({
     productId: String,
