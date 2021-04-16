@@ -142,6 +142,8 @@ export default class ProductResolver {
 
     return product.likes;
   }
+
+  
   @Subscription({
     topics: "PRODUCT",
   })
